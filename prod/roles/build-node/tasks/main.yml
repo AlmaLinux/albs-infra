@@ -1,0 +1,137 @@
+---
+- name: Add albs yum repository
+  ansible.builtin.yum_repository:
+    name: buildnode
+    enabled: 0
+    gpgcheck: 0
+    description: AlmaLinux - 8 - BuildNode
+    baseurl: https://repo.almalinux.org/build_system/8/$basearch/
+  become: yes
+
+- name: Install requirements
+  dnf:
+    enablerepo: 'buildnode,powertools,epel'
+    state: latest
+    name:
+      - apt
+      - apt-libs
+      - cmake
+      - cpio
+      - createrepo_c
+      - debian-keyring
+      - debootstrap
+      - dpkg-dev
+      - gcc
+      - gcc-c++
+      - git
+      - kernel-rpm-macros
+      - keyrings-filesystem
+      - libicu
+      - libicu-devel
+      - mlocate
+      - mock
+      - pbuilder
+      - python3
+      - python3-apt
+      - python3-createrepo_c
+      - python3-devel
+      - python3-libmodulemd
+      - python3-lxml
+      - python3-pycurl
+      - python3-virtualenv
+      - tree
+      - ubu-keyring
+      - xmlsec1-openssl-devel
+      - screen
+  become: yes
+
+- name: Clone albs-node git repository
+  ansible.builtin.git:
+    repo: 'https://github.com/AlmaLinux/albs-node.git'
+    dest: '{{ ansible_env.HOME }}/albs-node'
+    version: master
+    force: yes
+
+- name: Create python env
+  pip:
+    virtualenv: '{{ ansible_env.HOME }}/albs-node/env'
+    virtualenv_python: python3.6
+    virtualenv_site_packages: yes
+    requirements: '{{ ansible_env.HOME }}/albs-node/requirements.txt'
+
+- name: Create pesign directory
+  ansible.builtin.file:
+    path: /opt/pesign
+    state: directory
+  become: yes
+
+- name: Add pesign script
+  ansible.builtin.template:
+    src: pesign.j2
+    dest: /opt/pesign/pesign
+    mode: 0755
+  become: yes
+
+- name: Create pesign-client symlink
+  shell:
+    cmd: ln -s --force pesign pesign-client
+    chdir: /opt/pesign
+  become: yes
+
+- name: copy site-defaults.cfg
+  ansible.builtin.copy:
+    src: site-defaults.cfg
+    dest: /etc/mock/site-defaults.cfg
+  become: yes
+
+- name: Create base config directory
+  ansible.builtin.file:
+    path: '{{ ansible_env.HOME }}/.config/castor'
+    state: directory
+    recurse: yes
+
+- name: Create base config file
+  ansible.builtin.template:
+    src: 'build_node.yml.j2'
+    dest: '{{ ansible_env.HOME }}/.config/castor/build_node.yml'
+
+- name: Disable SELinux
+  ansible.posix.selinux:
+    state: disabled
+  become: yes
+
+- name: Make sysctl.d directory
+  ansible.builtin.file:
+    path: /etc/sysctl.d
+    state: directory
+  become: yes
+
+- name: Disable kernel randomize_va_space
+  ansible.builtin.lineinfile:
+    path: /etc/sysctl.d/90-randomize_va_space.conf
+    regexp: '^kernel.randomize_va_space='
+    line: 'kernel.randomize_va_space=0'
+    create: yes
+  become: yes
+
+- name: Make required directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ albs_user }}"
+    group: "{{ albs_user }}"
+  become: yes
+  loop:
+    - /srv/alternatives/castor/build_node
+    - /var/cache/pbuilder/aptcache/
+    - /var/cache/pbuilder/pbuilder_envs/
+    - /srv/alternatives/castor/build_node/pbuilder_envs/buster-amd64/aptcache
+    - /srv/alternatives/castor/build_node/pbuilder_envs/bionic-amd64/aptcache
+    - /srv/alternatives/castor/build_node/pbuilder_envs/focal-amd64/aptcache
+    - /srv/alternatives/castor/build_node/pbuilder_envs/jessie-amd64/aptcache
+    - /srv/alternatives/castor/build_node/pbuilder_envs/stretch-amd64/aptcache
+    - /srv/alternatives/castor/build_node/pbuilder_envs/xenial-amd64/aptcache
+    - /srv/alternatives/castor/build_node/pbuilder_envs/buster-arm64/aptcache
+    - /srv/alternatives/castor/build_node/pbuilder_envs/buster-armhf/aptcache
+    - /srv/alternatives/castor/build_node/pbuilder_envs/raspbian-armhf/aptcache
+    - /srv/alternatives/castor/build_node/mock_configs

@@ -1,0 +1,20 @@
+---
+- name: Clone albs-node sources
+  git:
+    repo: "{{ git_protocol }}://github.com/AlmaLinux/albs-node.git"
+    dest: "{{ sources_root }}/albs-node"
+    clone: yes
+    update: yes
+    force: yes
+    version: "{{ albs_node }}"
+
+- name: Make node config directory
+  ansible.builtin.file:
+    path: "{{ sources_root }}/albs-node/node-config/castor"
+    state: directory
+    recurse: yes
+
+- name: Make node config file
+  ansible.builtin.template:
+    src: build_node.yml.j2
+    dest: "{{ sources_root }}/albs-node/node-config/castor/build_node.yml"

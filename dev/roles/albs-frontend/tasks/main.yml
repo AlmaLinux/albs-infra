@@ -1,0 +1,9 @@
+---
+- name: Clone frontend sources
+  git:
+    repo: "{{ git_protocol }}://github.com/AlmaLinux/albs-frontend.git"
+    dest: "{{ sources_root }}/albs-frontend"
+    clone: yes
+    update: yes
+    force: yes
+    version: "{{ albs_frontend }}"

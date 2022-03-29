@@ -1,0 +1,30 @@
+---
+use_ssl: false
+ssl_config:
+  security_key: ""
+  security_certificate: ""
+  broker_ca_certificates: ""
+rabbitmq_host: "albs-rabbitmq"
+rabbitmq_port: 5672
+rabbitmq_ssl_port: 5671
+rabbitmq_user: "{{ rabbitmq_user }}"
+rabbitmq_password: "{{ rabbitmq_pass }}"
+rabbitmq_vhost: "{{ rabbitmq_vhost }}"
+result_backend: "{{ alts_result_backend }}"
+azureblockblob_container_name: ""
+azureblockblob_base_path: ""
+# deprecated
+azure_connection_string: "blockblob://"
+# deprecated
+azure_logs_container: "testsys-mqdata"
+task_default_queue: "default"
+task_acks_late: true
+task_track_started: true
+artifacts_root_directory: "test_system_artifacts"
+worker_prefetch_multiplier: 1
+jwt_secret: "{{ alts_jwt_secret }}"
+bs_host: "http://web_server:8000"
+bs_token: "{{ albs_jwt_token }}"
+pulp_host: "http://pulp"
+pulp_user: "{{ pulp_user }}"
+pulp_password: "{{ pulp_password }}"
