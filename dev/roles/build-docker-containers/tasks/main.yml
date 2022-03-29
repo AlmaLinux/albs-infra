@@ -1,0 +1,41 @@
+---
+- name: Run compose
+  community.docker.docker_compose:
+    build: yes
+    recreate: always
+    remove_orphans: yes
+    project_src: "{{ sources_root }}/albs-web-server"
+
+# This is needed for ci only, because albs jwt tokens are unusable without any user in database
+# TODO: check if user exists first
+- name: Make fake user for api usage
+  community.docker.docker_container_exec:
+    container: albs-web-server_db_1
+    command: |
+      psql --db="{{ postgres_database }}" -U postgres -c "INSERT INTO users (username, email) VALUES ('admin', 'admin@almalinux.org');"
+
+- name: Change pulp password
+  community.docker.docker_container_exec:
+    container: albs-web-server_pulp_1
+    command: "pulpcore-manager reset-admin-password -p {{ pulp_password }}"
+  # We're waiting here for pulp container to up, since it takes some time
+  # to start all services
+  retries: 10
+  delay: 6
+  register: result
+  until: result.rc == 0
+
+- name: Pause for 3 minutes to let pulp wake up all services
+  pause:
+    minutes: 3
+
+- name: Load platforms
+  community.docker.docker_container_exec:
+    container: albs-web-server_web_server_1
+    command: bash -c 'DATABASE_URL="postgresql+asyncpg://postgres:{{ postgres_password }}@db/{{ postgres_database }}" PULP_HOST=http://pulp PULP_USER=admin PULP_PASSWORD="{{ pulp_password }}" env/bin/python scripts/bootstrap_repositories.py -c reference_data/platforms.yaml -v'
+
+# TODO: add some condition to this branch, since developers doesn't need it
+#       on their local machines
+- name: Open 8088 port
+  ansible.builtin.shell: firewall-cmd --zone=public --permanent --add-port 8088/tcp && firewall-cmd --reload 
+  become: yes

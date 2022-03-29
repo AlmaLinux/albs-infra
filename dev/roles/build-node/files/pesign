@@ -1,0 +1,52 @@
+#!/bin/bash
+
+SERVER="77.79.198.25:8080/sign_efi/"
+
+JWT="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJDbG91ZExpbnV4LCBJbmMuIiwiZXhwIjoxODAwMTg1OTE2fQ.KQ4l8zM_F_7GWYViNDZSM30Z4Dc53BttoloTEuxqVz13zMsYYZYpsZRIfEpLFA9zICL4m1FpYe0NORT_dJM8jAI7JWN3C52vkH5plbwWQQ4raH511xFBPO7Uoihc1zTzm69j30BOVghTc6YRc2CQ2p4pqikRz25GI0mPCA3j6mnaPb0szPzLk2-BqnB9I9Euy4uraNxTtxW4A9Q7L645aDZ6ic80_VKZbVG5SbRa0m4uE9xiHG03LyPGn8JzoT3-ipBWfHS7HAX-kTtj4UnXO7eXntNP9kwcPRUKwEjJJi4ZfH6D04ysDmcY2wqURj5rDCUZlQhguS7H3rBRFDmj1e-gPwAldnWIJ0M7DAmQ_FrWmCaT5nWtPbn8SA63iBrm6oOWrV4PUozI5p13oLUbcCAN-d1N4pi3NAFSpPLx4syGLReWSMMuadq8EUpq71nkVt3u_wfP7x3uE1iifj1Zoyh-fCHYcje4hLqx5nvYBXnMCsB3vOrp0tcx79XPSSC6KUSr40UkZMidQ-mI8YHbNq2Dr7lJV9sGEnt03mU5AyqYL4OBWBiN4T1c7alQAHD_SDQjkK_qlTcczs13Zr2gVRuYHT-ln7AJmPyecegonjcdgvoGYHAGgXYTkSePfV55V6CzZsjENpFRe7qiGigK3_KRe0ZOHEIgoHHkqeXAUsE"
+
+while [[ $# -gt 0 ]]; do
+  key="$1"
+
+  case $key in
+    -t)
+      sign_token="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -c)
+      sign_cert="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -i)
+      input_file="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -o)
+      output_file="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -e)
+      output_sattr="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -s)
+      shift # past argument
+      ;;
+    -C)
+      export_cert="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    --certdir)
+      certdir="$2"
+      shift # past argument
+      shift # past value
+      ;;
+  esac
+done
+
+curl --fail -D /dev/stdout -X POST -H "sign_token: ${sign_token}" -H "sign_cert: ${sign_cert}" -H "Content-Type: multipart/form-data" -H "Cookie: JWT=${JWT}" -F "input_file=@${input_file}" --output "${output_file}" ${SERVER}

@@ -1,0 +1,24 @@
+---
+- name: Installing prerequisites
+  hosts: all
+  gather_facts: false
+  roles:
+    - { role: docker-ce, when: install_docker is true }
+    - { role: pre_deploy, when: pre_deploy is true }
+  vars:
+    ansible_user: "root"
+
+- name: Deploy the ALBS
+  hosts: all
+  roles:
+    - { role: docker-compose, when: install_docker is true }
+    - albs-frontend
+    - albs-node
+    - albs-sign_node
+    - alts
+    - albs-web_server
+    - build-docker-containers
+  connection: "{{ 'local' if pre_deploy is false else omit }}"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3.9
+    ansible_user: "{{ albs_user }}"

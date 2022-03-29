@@ -1,0 +1,17 @@
+---
+- name: Install requirements
+  dnf:
+    name:
+      - python39-pip
+      - python39-devel
+      - gcc
+      - make
+    state: latest
+  become: yes
+
+- name: Install docker-compose
+  ansible.builtin.pip:
+    name:
+      - docker-compose
+  become: yes
+

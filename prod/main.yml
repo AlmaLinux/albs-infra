@@ -1,0 +1,7 @@
+---
+- hosts: build_nodes
+  roles:
+    - role: pre_deploy
+    - role: build-node
+      vars:
+        ansible_user: 'albs-node'

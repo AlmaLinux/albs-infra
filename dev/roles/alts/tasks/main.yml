@@ -1,0 +1,14 @@
+---
+- name: Clone alts sources
+  git:
+    repo: "{{ git_protocol }}://github.com/AlmaLinux/alts.git"
+    dest: "{{ sources_root }}/alts"
+    clone: yes
+    update: yes
+    force: yes
+    version: "{{ alts }}"
+
+- name: Make alts config file
+  ansible.builtin.template:
+    src: alts_config.yml.j2
+    dest: "{{ sources_root }}/alts/configs/alts_config.yaml"

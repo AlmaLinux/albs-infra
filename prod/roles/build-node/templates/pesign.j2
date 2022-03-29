@@ -1,0 +1,52 @@
+#!/bin/bash
+
+SERVER="{{ pesign_server }}"
+
+JWT="{{ pesign_token }}"
+
+while [[ $# -gt 0 ]]; do
+  key="$1"
+
+  case $key in
+    -t)
+      sign_token="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -c)
+      sign_cert="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -i)
+      input_file="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -o)
+      output_file="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -e)
+      output_sattr="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -s)
+      shift # past argument
+      ;;
+    -C)
+      export_cert="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    --certdir)
+      certdir="$2"
+      shift # past argument
+      shift # past value
+      ;;
+  esac
+done
+
+curl --fail -D /dev/stdout -X POST -H "sign_token: ${sign_token}" -H "sign_cert: ${sign_cert}" -H "Content-Type: multipart/form-data" -H "Cookie: JWT=${JWT}" -F "input_file=@${input_file}" --output "${output_file}" ${SERVER}

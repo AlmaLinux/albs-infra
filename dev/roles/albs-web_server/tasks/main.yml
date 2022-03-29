@@ -1,0 +1,25 @@
+---
+- name: Clone albs-web-server sources
+  git:
+    repo: "{{ git_protocol }}://github.com/AlmaLinux/albs-web-server.git"
+    dest: "{{ sources_root }}/albs-web-server"
+    clone: yes
+    update: yes
+    force: yes
+    version: "{{ albs_web_server }}"
+
+- name: Create vars.env file
+  ansible.builtin.template:
+    src: vars.env.j2
+    dest: "{{ sources_root }}/albs-web-server/vars.env"
+
+- name: Create pulp settings directory
+  ansible.builtin.file:
+    path: "{{sources_root}}/albs-web-server/volumes/pulp/settings"
+    state: directory
+    recurse: yes
+
+- name: Copy pulp settings
+  ansible.builtin.template:
+    src: pulp_settings.py.j2
+    dest: "{{sources_root}}/albs-web-server/volumes/pulp/settings/settings.py"
