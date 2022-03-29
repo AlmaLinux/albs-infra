@@ -1,0 +1,44 @@
+---
+- name: Clone albs-sign-node sources
+  git:
+    repo: "{{ git_protocol }}://github.com/AlmaLinux/albs-sign-node.git"
+    dest: "{{ sources_root }}/albs-sign-node"
+    clone: yes
+    update: yes
+    force: yes
+    version: "{{ albs_sign_node }}"
+
+- name: Make node config directory
+  ansible.builtin.file:
+    path: "{{ sources_root }}/albs-sign-node/node-config"
+    state: directory
+    recurse: yes
+
+- name: Make node config file
+  ansible.builtin.template:
+    src: sign_node.yml.j2
+    dest: "{{ sources_root }}/albs-sign-node/node-config/sign_node.yml"
+
+- name: Checking a development PGP key presence
+  shell: gpg2 --list-keys | grep {{ pgp_keyid[8:] }}
+  ignore_errors: yes
+  register: gpg_check
+
+- name: Uploading a development PGP key
+  ansible.builtin.copy:
+    src: BuildSysDevelopment.secret.key
+    dest: "~/development.key"
+  when: gpg_check.rc != 0
+
+- name: Importing a development PGP key
+  shell: "gpg2 --batch --import ~/development.key"
+  when: gpg_check.rc != 0
+
+- name: Cleanup - removing development.key after import
+  ansible.builtin.file:
+    path: ~/development.key
+    state: absent
+
+- name: Marking a development PGP key as trusted
+  shell: "echo {{ pgp_fingerprint }}:6 | gpg2 --import-ownertrust"
+

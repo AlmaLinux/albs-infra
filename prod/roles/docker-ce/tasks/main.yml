@@ -1,0 +1,37 @@
+---
+- name: "Checking that {{ item }} variable is defined"
+  fail: msg="{{ item }} is not defined or empty"
+  when: (item is undefined) or (item is none) or (item | trim == '')
+  with_items:
+    - docker_user
+
+- name: Add Docker CE repository
+  copy:
+    src: docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+
+- name: Install Docker CE
+  dnf:
+    name:
+      - containerd.io
+      - docker-ce
+      - docker-ce-cli
+  become: yes
+
+- name: Enable and start Docker daemon
+  service:
+    name: docker
+    enabled: true
+    state: started
+  become: yes
+
+- name: Add user to docker group
+  user:
+    name: "{{ docker_user }}"
+    groups: docker
+    append: true
+  become: yes

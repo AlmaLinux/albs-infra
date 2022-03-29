@@ -1,0 +1,46 @@
+---
+all:
+  hosts:
+    <HOST_TO_DEPLOY>:
+  vars:
+    local_connection: no               # You should set this to true if you're deploying it to your local machine
+    load_platforms: yes                # If you're deploying albs for the first time - you should leave it as yes
+    pre_deploy: no                     # You probably don't want this var to be true
+    install_docker: no                 # You probably don't want this var to be true
+
+    sources_root: ~/                   # Path, where all repos will be cloned
+    git_protocol: https                # If you deploying dev environment, you probably want ssh here
+
+    postgres_password: password        # Can be left unchanged
+    postgres_database: almalinux-bs    # Can be left unchanged
+
+    github_client: ""                  # Ask for it or create your own github app
+    github_client_secret: ""           # Ask for it or create your own github app
+
+    albs_jwt_token: ""                 # Ask for it or generate your own
+    alts_jwt_token: ""                 # Ask for it or generate your own
+
+    albs_jwt_secret: albs-secret       # Can be left unchanged for dev env
+    alts_jwt_secret: alts-secret       # Can be left unchanged for dev env
+
+    pulp_user: admin                   # Can be left unchanged
+    pulp_password: admin               # Can be left unchanged
+
+    rabbitmq_user: 'test-system'       # Can be left unchanged
+    rabbitmq_pass: 'rabbitmq-password' # Can be left unchanged
+    rabbitmq_vhost: 'test_system'      # Can be left unchanged
+    alts_result_backend: ''            # Ask for it, but I believe this is deprecated option
+
+    pgp_password: '32167'              # Don't touch that, unless you made your own pgp key
+    pgp_keyid: 002D64E3C7827BD1        # Don't touch that, unless you made your own pgp key
+    pgp_fingerprint: 8E0EF28BB3DF0A9FCA18408B002D64E3C7827BD1  # Don't touch that, unless you made your own pgp key
+
+    albs_user: albs                    # Important: place your own username here
+    docker_user: albs                  # Important: place your own username here
+    albs_ssh_key:                      # If you deploing dev environment, you probably don't need that option
+
+    albs-web-server: 'master'
+    albs-node: 'master'
+    albs-frontend: 'master'
+    albs-sign-node: 'master'
+    alts: 'master'

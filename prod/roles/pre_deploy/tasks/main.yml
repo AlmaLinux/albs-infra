@@ -1,0 +1,28 @@
+---
+- name: Install required packages
+  dnf:
+    name:
+      - git
+      - epel-release
+  become: yes
+
+- name: Create albs user
+  ansible.builtin.user:
+    name: "{{ albs_user }}"
+    create_home: yes
+    groups: ["wheel", "mock"]
+  become: yes
+
+- name: Add paswordless sudo for albs user
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+  become: yes
+
+- name: Add ssh key to albs user
+  ansible.posix.authorized_key:
+    key: "{{ albs_ssh_key }}"
+    user: "{{ albs_user }}"
