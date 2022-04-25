@@ -1,5 +1,5 @@
 ---
-- name: Clone albs-node sources
+- name: Clone albs-node sources for https
   git:
     repo: "{{ git_protocol }}://github.com/AlmaLinux/albs-node.git"
     dest: "{{ sources_root }}/albs-node"
@@ -7,6 +7,16 @@
     update: yes
     force: yes
     version: "{{ albs_node }}"
+  when: git_protocol == "https"
+
+- name: Clone albs-node sources for ssh
+  git:
+    repo: "git@github.com:AlmaLinux/albs-node.git"
+    dest: "{{ sources_root }}/albs-node"
+    clone: yes
+    update: yes
+    force: yes
+  when: git_protocol == "ssh"
 
 - name: Make node config directory
   ansible.builtin.file:

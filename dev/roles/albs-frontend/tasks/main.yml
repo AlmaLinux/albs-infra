@@ -1,5 +1,5 @@
 ---
-- name: Clone frontend sources
+- name: Clone frontend sources for https
   git:
     repo: "{{ git_protocol }}://github.com/AlmaLinux/albs-frontend.git"
     dest: "{{ sources_root }}/albs-frontend"
@@ -7,3 +7,14 @@
     update: yes
     force: yes
     version: "{{ albs_frontend }}"
+  when: git_protocol == 'https'
+
+- name: Clone frontend sources for ssh
+  git:
+    repo: "git@github.com:AlmaLinux/albs-frontend.git"
+    dest: "{{ sources_root }}/albs-frontend"
+    clone: yes
+    update: yes
+    force: yes
+  when: git_protocol == 'ssh'
+

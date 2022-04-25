@@ -1,5 +1,5 @@
 ---
-- name: Clone alts sources
+- name: Clone alts sources for https
   git:
     repo: "{{ git_protocol }}://github.com/AlmaLinux/alts.git"
     dest: "{{ sources_root }}/alts"
@@ -7,6 +7,16 @@
     update: yes
     force: yes
     version: "{{ alts }}"
+  when: git_protocol == "https"
+
+- name: Clone alts sources for ssh
+  git:
+    repo: "git@github.com:AlmaLinux/alts.git"
+    dest: "{{ sources_root }}/alts"
+    clone: yes
+    update: yes
+    force: yes
+  when: git_protocol == "ssh"
 
 - name: Make alts config file
   ansible.builtin.template:

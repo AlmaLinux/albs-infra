@@ -1,5 +1,5 @@
 ---
-- name: Clone albs-sign-node sources
+- name: Clone albs-sign-node sources for https
   git:
     repo: "{{ git_protocol }}://github.com/AlmaLinux/albs-sign-node.git"
     dest: "{{ sources_root }}/albs-sign-node"
@@ -7,6 +7,16 @@
     update: yes
     force: yes
     version: "{{ albs_sign_node }}"
+  when: git_protocol == "https"
+
+- name: Clone albs-sign-node sources for ssh
+  git:
+    repo: "git@github.com:AlmaLinux/albs-sign-node.git"
+    dest: "{{ sources_root }}/albs-sign-node"
+    clone: yes
+    update: yes
+    force: yes
+  when: git_protocol == "ssh"
 
 - name: Make node config directory
   ansible.builtin.file:
@@ -41,4 +51,3 @@
 
 - name: Marking a development PGP key as trusted
   shell: "echo {{ pgp_fingerprint }}:6 | gpg2 --import-ownertrust"
-

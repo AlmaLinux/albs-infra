@@ -1,5 +1,5 @@
 ---
-- name: Clone albs-web-server sources
+- name: Clone albs-web-server sources for https
   git:
     repo: "{{ git_protocol }}://github.com/AlmaLinux/albs-web-server.git"
     dest: "{{ sources_root }}/albs-web-server"
@@ -7,6 +7,16 @@
     update: yes
     force: yes
     version: "{{ albs_web_server }}"
+  when: git_protocol == "https"
+
+- name: Clone albs-web-server sources for ssh
+  git:
+    repo: "git@github.com:AlmaLinux/albs-web-server.git"
+    dest: "{{ sources_root }}/albs-web-server"
+    clone: yes
+    update: yes
+    force: yes
+  when: git_protocol == "ssh"
 
 - name: Create vars.env file
   ansible.builtin.template:
