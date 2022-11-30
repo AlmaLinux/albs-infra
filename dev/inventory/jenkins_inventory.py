@@ -20,10 +20,17 @@ def main(argv):
 
     albs_jwt_secret = 'secret'
     alts_jwt_secret = 'alts-secret'
-    albs_jwt_token = jwt.encode({
-        'expires': time.time() + 99999999999999999999,
-        'identity': {'user_id': 1}
-    }, albs_jwt_secret)
+    albs_jwt_token = jwt.encode(
+        {
+            'user_id': '1',
+            'aud': [
+                'fastapi-users:auth'
+            ],
+            'exp': int(time.time() + 99999999999999999999),
+        },
+        albs_jwt_secret,
+        algorithm='HS256'
+    )
     alts_jwt_token = jwt.encode(
         {'email': 'base_user@almalinux.org'},
         alts_jwt_secret,
