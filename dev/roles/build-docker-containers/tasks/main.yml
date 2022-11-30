@@ -35,7 +35,7 @@
       PULP_HOST: "http://pulp"
       PULP_USER: "admin"
       PULP_PASSWORD: "{{ pulp_password }}"
-    command: bash -c 'env/bin/python scripts/manage_users.py -e base_user@almalinux.org --verify -t AlmaLinux_team'
+    command: bash -c 'env/bin/python scripts/manage_users.py -e base_user@almalinux.org -t AlmaLinux_team' --verify --superuser
   when: "{{ load_platforms is true }}"
 
 - name: Load platforms
