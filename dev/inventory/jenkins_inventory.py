@@ -25,7 +25,9 @@ def main(argv):
         'identity': {'user_id': 1}
     }, albs_jwt_secret)
     alts_jwt_token = jwt.encode(
-        {'email': 'base_user@almalinux.org'}, alts_jwt_secret
+        {'email': 'base_user@almalinux.org'},
+        alts_jwt_secret,
+        algorithm='HS256'
     )
 
     rabbitmq_pass = 'testy_test_test'
