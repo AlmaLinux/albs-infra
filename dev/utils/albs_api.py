@@ -80,6 +80,7 @@ class AlbsAPI:
             self.make_full_url('/api/v1/builds/'),
             json=payload
         )
+        logger.debug(f'Request payload: {payload}')
         response = self.make_request(request)
         response.raise_for_status()
         # Right now albs builds api returns 404 for created builds
