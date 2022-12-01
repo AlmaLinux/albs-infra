@@ -49,6 +49,7 @@ class AlbsAPI:
                 module_version=None,
                 module_platform=None
             ):
+
         is_module = bool(module_name)
         git_project_type = 'modules' if is_module else 'rpms'
         git_name = module_name or rpm_name
@@ -65,15 +66,18 @@ class AlbsAPI:
             tasks[0]['module_platform_version'] = module_platform
         if module_version is not None:
             tasks[0]['module_version'] = module_version
+
         payload = {
             'is_secure_boot': False,
             'platforms': [
                 {
                     'name': self._platform_name,
                     'arch_list': self._arch_list,
+                    'parallel_mode_enabled': False,
                 }
             ],
-            'tasks': tasks
+            'tasks': tasks,
+            'product_id': 1
         }
         request = requests.Request(
             'post',
