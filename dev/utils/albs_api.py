@@ -41,14 +41,15 @@ class AlbsAPI:
         return Build(**response.json())
 
     def create_build(
-                self,
-                git_ref,
-                rpm_name=None,
-                module_name=None,
-                ref_type='git_branch',
-                module_version=None,
-                module_platform=None
-            ):
+            self,
+            git_ref,
+            rpm_name=None,
+            module_name=None,
+            ref_type='git_branch',
+            module_version=None,
+            module_platform=None
+    ):
+
         is_module = bool(module_name)
         git_project_type = 'modules' if is_module else 'rpms'
         git_name = module_name or rpm_name
@@ -65,15 +66,18 @@ class AlbsAPI:
             tasks[0]['module_platform_version'] = module_platform
         if module_version is not None:
             tasks[0]['module_version'] = module_version
+
         payload = {
             'is_secure_boot': False,
             'platforms': [
                 {
                     'name': self._platform_name,
                     'arch_list': self._arch_list,
+                    'parallel_mode_enabled': True,
                 }
             ],
-            'tasks': tasks
+            'tasks': tasks,
+            'product_id': 1
         }
         request = requests.Request(
             'post',
@@ -86,9 +90,9 @@ class AlbsAPI:
         # until task queue is done with it, so we're sleeping for
         # 1 minute here, before passing build results to user
         # TODO: fix albs api and remove this sleep
-        time.sleep(60) 
+        time.sleep(60)
         return CreatedBuild(id=response.json()['id'])
-    
+
     def wait_for_build(self, build: Build, timeout: int = 60):
         for _ in range(timeout):
             build = self.check_build(build.id)
