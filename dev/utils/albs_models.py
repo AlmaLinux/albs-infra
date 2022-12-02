@@ -1,3 +1,4 @@
+import json
 import typing
 import datetime
 
@@ -56,7 +57,7 @@ class BuildTask(BaseModel):
     test_tasks: typing.List[BuildTaskTestTask]
 
 
-class BuildUser(BaseModel):
+class BuildOwner(BaseModel):
 
     id: int
     username: str
@@ -73,7 +74,7 @@ class Build(BaseModel):
     id: int
     created_at: datetime.datetime
     tasks: typing.List[BuildTask]
-    user: BuildUser
+    owner: BuildOwner
     sign_tasks: typing.List[BuildSignTask]
     linked_builds: typing.Optional[typing.List[int]] = Field(default_factory=list)
     mock_options: typing.Optional[typing.Dict[str, typing.Any]]

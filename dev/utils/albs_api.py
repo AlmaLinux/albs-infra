@@ -73,7 +73,7 @@ class AlbsAPI:
                 {
                     'name': self._platform_name,
                     'arch_list': self._arch_list,
-                    'parallel_mode_enabled': False,
+                    'parallel_mode_enabled': True,
                 }
             ],
             'tasks': tasks,
