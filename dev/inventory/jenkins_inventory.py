@@ -63,7 +63,7 @@ def main(argv):
                 'postgres_database': 'almalinux-bs',
                 'github_client': github_client,
                 'github_client_secret': github_client_secret,
-                'frontend_baseurl': f'http://{host}:8080',
+                'frontend_baseurl': f'http://albs:8080',
                 'albs_jwt_token': albs_jwt_token,
                 'alts_jwt_token': alts_jwt_token,
                 'albs_jwt_secret': albs_jwt_secret,

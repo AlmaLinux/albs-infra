@@ -24,3 +24,12 @@
   ansible.posix.authorized_key:
     key: "{{ albs_ssh_key }}"
     user: "{{ albs_user }}"
+
+- name: Add IP address of all hosts to all hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: "{{ hostvars[item].ansible_host }} {{item}}"
+    state: present
+  when: hostvars[item].ansible_host is defined
+  with_items: "{{ groups.all }}"

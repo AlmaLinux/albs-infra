@@ -25,8 +25,8 @@ pipeline {
       TF_VAR_one_network_id  = "${params.nebula_network_id}"
       TF_VAR_one_password = credentials('sedliarskii_nebula')
       TF_VAR_albs_ssh_key = credentials('alternatives_public_ssh_key')
-      ALBS_GITHUB_CLIENT = credentials('albs_github_client')
-      ALBS_GITHUB_CLIENT_SECRET = credentials('albs_github_client_secret')
+      ALBS_GITHUB_CLIENT = credentials('sedliarskii_github_client')
+      ALBS_GITHUB_CLIENT_SECRET = credentials('sedliarskii_github_secret')
       ALBS_WEB_SERVER = "${params.albs_web_server}"
       ALBS_NODE = "${params.albs_node}"
       ALBS_FRONTEND = "${params.albs_frontend}"
