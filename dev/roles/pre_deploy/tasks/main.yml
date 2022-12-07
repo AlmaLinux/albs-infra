@@ -25,6 +25,11 @@
     key: "{{ albs_ssh_key }}"
     user: "{{ albs_user }}"
 
+- name: Display all variables/facts known for a host
+  debug:
+    var: "{{ item }}"
+  with_items: "{{ hostvars }}"
+
 - name: Add IP address of all hosts to all hosts
   lineinfile:
     dest: /etc/hosts
