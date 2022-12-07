@@ -25,14 +25,10 @@
     key: "{{ albs_ssh_key }}"
     user: "{{ albs_user }}"
 
-- name: Display all variables/facts known for a host
-  debug:
-    var: hostvars
-  tags: debug_info
-
 - name: Add IP address of all hosts to all hosts
   lineinfile:
     dest: /etc/hosts
-    regexp: ".*{{ hostvars['all']['hosts'][0] }}$"
-    line: "{{ hostvars['all']['hosts'][0] }} albs"
+    regexp: '.*{{ item.all.hosts[0] }}$'
+    line: "{{ item.all.hosts[0] }} albs"
     state: present
+  with_items: "{{ hostvars }}"
