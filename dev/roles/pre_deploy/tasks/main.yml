@@ -28,4 +28,4 @@
 - name: Add ALBS IP address to hosts file
   lineinfile:
     dest: /etc/hosts
-    line: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} albs"
+    line: "{{ ansible_default_ipv4.address }} albs"
