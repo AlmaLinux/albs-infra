@@ -33,6 +33,6 @@
 - name: Add IP address of all hosts to all hosts
   lineinfile:
     dest: /etc/hosts
-    regexp: '.*{{ hostvars['all']['hosts'][0] }}$'
+    regexp: ".*{{ hostvars['all']['hosts'][0] }}$"
     line: "{{ hostvars['all']['hosts'][0] }} albs"
     state: present
