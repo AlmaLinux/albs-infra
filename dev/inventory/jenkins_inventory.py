@@ -63,6 +63,7 @@ def main(argv):
                 'postgres_database': 'almalinux-bs',
                 'github_client': github_client,
                 'github_client_secret': github_client_secret,
+                'frontend_baseurl': f'http://{host}:8080',
                 'albs_jwt_token': albs_jwt_token,
                 'alts_jwt_token': alts_jwt_token,
                 'albs_jwt_secret': albs_jwt_secret,
@@ -72,7 +73,7 @@ def main(argv):
                 'rabbitmq_user': 'test-system',
                 'rabbitmq_pass': rabbitmq_pass,
                 'rabbitmq_vhost': 'test_system',
-                'alts_result_backend': '', # This is deprecated option
+                'alts_result_backend': '',  # This is deprecated option
                 'pgp_password': '32167',
                 'pgp_keyid': '002D64E3C7827BD1',
                 'pgp_fingerprint': '8E0EF28BB3DF0A9FCA18408B002D64E3C7827BD1',
