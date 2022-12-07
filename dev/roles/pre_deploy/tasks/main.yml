@@ -25,7 +25,11 @@
     key: "{{ albs_ssh_key }}"
     user: "{{ albs_user }}"
 
-- name: Add ALBS IP address to hosts file
+- name: Add IP address of all hosts to all hosts
   lineinfile:
     dest: /etc/hosts
-    line: "{{ ansible_default_ipv4.address }} albs"
+    regexp: '.*{{ item }}$'
+    line: "{{ hostvars[item]['ansible_ssh_host'] }} albs"
+    state: present
+  when: hostvars[item].ansible_ssh_host is defined
+  with_items: "{{ groups['all'] }}"
