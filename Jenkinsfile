@@ -49,8 +49,9 @@ pipeline {
                   // TODO: terraform has ability to wait for vm to be ready,
                   // but we're waiting for vm to be ready here...
                   // https://stackoverflow.com/questions/62403030/terraform-wait-till-the-instance-is-reachable
+                  sh "env"
                   sh "sleep 120"
-                  sh ". ~/albc-ci-env/bin/activate && cd dev && ansible-playbook -i inventory/jenkins_inventory.py main.yml"
+                  sh ". ~/albc-ci-env/bin/activate && cd dev && env && ansible-playbook -i inventory/jenkins_inventory.py main.yml"
               }
           }
       }
