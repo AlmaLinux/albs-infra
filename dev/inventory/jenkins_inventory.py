@@ -39,8 +39,8 @@ def main(argv):
 
     rabbitmq_pass = 'testy_test_test'
 
-    github_client = os.environ.get('albs_github_client')
-    github_client_secret = os.environ.get('albs_github_client_secret')
+    github_client = os.environ.get('ALBS_GITHUB_CLIENT')
+    github_client_secret = os.environ.get('ALBS_GITHUB_CLIENT_SECRET')
     albs_ssh_key = os.environ.get('TF_VAR_albs_ssh_key')
 
     albs_web_server = os.environ.get('albs_web_server', 'master')
