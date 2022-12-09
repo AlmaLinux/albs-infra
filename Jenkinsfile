@@ -40,20 +40,20 @@ pipeline {
               script {
                   sh """
                     export HISTFILE=/dev/null
-                    export TF_VAR_one_endpoint=${TF_VAR_one_endpoint}
-                    export TF_VAR_one_username=${TF_VAR_one_username}
-                    export TF_VAR_one_template_id=${TF_VAR_one_template_id}
-                    export TF_VAR_one_image_id=${TF_VAR_one_image_id}
-                    export TF_VAR_one_network_id=${TF_VAR_one_network_id}
-                    export TF_VAR_one_password=${TF_VAR_one_password}
-                    export TF_VAR_albs_ssh_key=${TF_VAR_albs_ssh_key}
-                    export ALBS_GITHUB_CLIENT=${ALBS_GITHUB_CLIENT}
-                    export ALBS_GITHUB_CLIENT_SECRET=${ALBS_GITHUB_CLIENT_SECRET}
-                    export ALBS_WEB_SERVER=${ALBS_WEB_SERVER}
-                    export ALBS_NODE=${ALBS_NODE}
-                    export ALBS_FRONTEND=${ALBS_FRONTEND}
-                    export ALBS_SIGN_NODE=${ALBS_SIGN_NODE}
-                    export ALTS=${ALTS}
+                    export TF_VAR_one_endpoint="${TF_VAR_one_endpoint}"
+                    export TF_VAR_one_username="${TF_VAR_one_username}"
+                    export TF_VAR_one_template_id="${TF_VAR_one_template_id}"
+                    export TF_VAR_one_image_id="${TF_VAR_one_image_id}"
+                    export TF_VAR_one_network_id="${TF_VAR_one_network_id}"
+                    export TF_VAR_one_password="${TF_VAR_one_password}"
+                    export TF_VAR_albs_ssh_key="${TF_VAR_albs_ssh_key}"
+                    export ALBS_GITHUB_CLIENT="${ALBS_GITHUB_CLIENT}"
+                    export ALBS_GITHUB_CLIENT_SECRET="${ALBS_GITHUB_CLIENT_SECRET}"
+                    export ALBS_WEB_SERVER="${ALBS_WEB_SERVER}"
+                    export ALBS_NODE="${ALBS_NODE}"
+                    export ALBS_FRONTEND="${ALBS_FRONTEND}"
+                    export ALBS_SIGN_NODE="${ALBS_SIGN_NODE}"
+                    export ALTS="${ALTS}"
                     env
                   """
                   sh "env && terraform -chdir=dev/terraform/nebula init"
