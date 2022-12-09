@@ -43,11 +43,11 @@ def main(argv):
     github_client_secret = os.environ.get('ALBS_GITHUB_CLIENT_SECRET')
     albs_ssh_key = os.environ.get('TF_VAR_albs_ssh_key')
 
-    albs_web_server = os.environ.get('ALBS_WEB_SERVER', 'master')
-    albs_node = os.environ.get('ALBS_NODE', 'master')
-    albs_frontend = os.environ.get('ALBS_FRONTEND', 'master')
-    albs_sign_node = os.environ.get('ALBS_SIGN_NODE', 'master')
-    alts = os.environ.get('ALTS', 'master')
+    albs_web_server = os.environ.get('albs_web_server', 'master')
+    albs_node = os.environ.get('albs_node', 'master')
+    albs_frontend = os.environ.get('albs_frontend', 'master')
+    albs_sign_node = os.environ.get('albs_sign_node', 'master')
+    alts = os.environ.get('alts', 'master')
 
     response = {
         'all': {
