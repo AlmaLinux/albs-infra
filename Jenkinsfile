@@ -54,6 +54,7 @@ pipeline {
                     export ALBS_FRONTEND=$ALBS_FRONTEND
                     export ALBS_SIGN_NODE=$ALBS_SIGN_NODE
                     export ALTS=$ALTS
+                    env
                   '''
                   sh "env && terraform -chdir=dev/terraform/nebula init"
                   sh "terraform -chdir=dev/terraform/nebula apply -auto-approve"
