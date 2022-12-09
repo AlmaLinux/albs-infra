@@ -44,7 +44,7 @@ pipeline {
                     export TF_VAR_one_username=$TF_VAR_one_username
                     export TF_VAR_one_template_id=$TF_VAR_one_template_id
                     export TF_VAR_one_image_id=$TF_VAR_one_image_id
-                    export TF_VAR_one_network_id =$TF_VAR_one_network_id
+                    export TF_VAR_one_network_id=$TF_VAR_one_network_id
                     export TF_VAR_one_password=$TF_VAR_one_password
                     export TF_VAR_albs_ssh_key=$TF_VAR_albs_ssh_key
                     export ALBS_GITHUB_CLIENT=$ALBS_GITHUB_CLIENT
