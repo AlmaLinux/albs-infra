@@ -38,24 +38,24 @@ pipeline {
       stage('Create instance') {
           steps {
               script {
-                  sh '''
+                  sh """
                     export HISTFILE=/dev/null
-                    export TF_VAR_one_endpoint=${params.nebula_endpoint}
-                    export TF_VAR_one_username=${params.nebula_username}
-                    export TF_VAR_one_template_id=${params.nebula_template_id}
-                    export TF_VAR_one_image_id=${params.nebula_image_id}
-                    export TF_VAR_one_network_id=${params.nebula_network_id}
-                    export TF_VAR_one_password=${credentials('sedliarskii_nebula')}
-                    export TF_VAR_albs_ssh_key=${credentials('alternatives_public_ssh_key')}
-                    export ALBS_GITHUB_CLIENT=${credentials('sedliarskii_github_client')}
-                    export ALBS_GITHUB_CLIENT_SECRET=${credentials('sedliarskii_github_secret')}
-                    export ALBS_WEB_SERVER=${params.albs_web_server}
-                    export ALBS_NODE=${params.albs_node}
-                    export ALBS_FRONTEND=${params.albs_frontend}
-                    export ALBS_SIGN_NODE=${params.albs_sign_node}
-                    export ALTS=${params.alts}
+                    export TF_VAR_one_endpoint=${TF_VAR_one_endpoint}
+                    export TF_VAR_one_username=${TF_VAR_one_username}
+                    export TF_VAR_one_template_id=${TF_VAR_one_template_id}
+                    export TF_VAR_one_image_id=${TF_VAR_one_image_id}
+                    export TF_VAR_one_network_id=${TF_VAR_one_network_id}
+                    export TF_VAR_one_password=${TF_VAR_one_password}
+                    export TF_VAR_albs_ssh_key=${TF_VAR_albs_ssh_key}
+                    export ALBS_GITHUB_CLIENT=${ALBS_GITHUB_CLIENT}
+                    export ALBS_GITHUB_CLIENT_SECRET=${ALBS_GITHUB_CLIENT_SECRET}
+                    export ALBS_WEB_SERVER=${ALBS_WEB_SERVER}
+                    export ALBS_NODE=${ALBS_NODE}
+                    export ALBS_FRONTEND=${ALBS_FRONTEND}
+                    export ALBS_SIGN_NODE=${ALBS_SIGN_NODE}
+                    export ALTS=${ALTS}
                     env
-                  '''
+                  """
                   sh "env && terraform -chdir=dev/terraform/nebula init"
                   sh "terraform -chdir=dev/terraform/nebula apply -auto-approve"
               }
