@@ -2,7 +2,6 @@
 
 Library           SeleniumLibrary
 
-Resource    ${EXECDIR}/resources/includes.robot
 Resource    ${EXECDIR}/resources/locators.robot
 Resource    ${EXECDIR}/resources/items.robot
 Resource    ${EXECDIR}/resources/vars.robot
