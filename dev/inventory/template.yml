@@ -16,6 +16,7 @@ all:
 
     github_client: ""                  # Ask for it or create your own github app
     github_client_secret: ""           # Ask for it or create your own github app
+    frontend_baseurl: ""
 
     albs_jwt_token: ""                 # Ask for it or generate your own
     alts_jwt_token: ""                 # Ask for it or generate your own
