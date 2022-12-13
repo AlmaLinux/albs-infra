@@ -11,9 +11,9 @@ pipeline {
       string(name: 'albs_sign_node', defaultValue: 'master', description: 'albs-sign-node branch/tag')
       string(name: 'alts', defaultValue: 'master', description: 'alts branch/tag')
       string(name: 'nebula_endpoint', defaultValue: 'https://nebula-atm.cloudlinux.com:2633/RPC2', description: 'opennebula endpoint')
-      string(name: 'nebula_username', defaultValue: 'alternatives', description: 'opennebula user')
-      string(name: 'nebula_template_id', defaultValue: '42847', description: 'opennebula template id')
-      string(name: 'nebula_image_id', defaultValue: '44562', description: 'opennebula image id')
+      string(name: 'nebula_username', defaultValue: 'asedliarskii', description: 'opennebula user')
+      string(name: 'nebula_template_id', defaultValue: '60959', description: 'opennebula template id')
+      string(name: 'nebula_image_id', defaultValue: '62512', description: 'opennebula image id')
       string(name: 'nebula_network_id', defaultValue: '6', description: 'opennebula network id (default is buildsys:mrybas)')
       booleanParam(defaultValue: true, description: 'Destroy nebula instance', name: 'DESTROY')
   }
@@ -23,10 +23,10 @@ pipeline {
       TF_VAR_one_template_id = "${params.nebula_template_id}"
       TF_VAR_one_image_id = "${params.nebula_image_id}"
       TF_VAR_one_network_id  = "${params.nebula_network_id}"
-      TF_VAR_one_password = credentials('alternatives_nebula_password')
+      TF_VAR_one_password = credentials('sedliarskii_nebula')
       TF_VAR_albs_ssh_key = credentials('alternatives_public_ssh_key')
-      ALBS_GITHUB_CLIENT = credentials('albs_github_client')
-      ALBS_GITHUB_CLIENT_SECRET = credentials('albs_github_client_secret')
+      ALBS_GITHUB_CLIENT = credentials('sedliarskii_github_client')
+      ALBS_GITHUB_CLIENT_SECRET = credentials('sedliarskii_github_secret')
       ALBS_WEB_SERVER = "${params.albs_web_server}"
       ALBS_NODE = "${params.albs_node}"
       ALBS_FRONTEND = "${params.albs_frontend}"
