@@ -6,15 +6,17 @@ Library           DatabaseLibrary
 Resource    ${EXECDIR}/resources/locators.robot
 Resource    ${EXECDIR}/resources/vars.robot
 
+Resource    ${EXECDIR}/pages/teams.robot
+
 
 *** Keywords ***
 
 Login
     Open Browser To Build System Page
     Authorize
-#    Activate new user
-#    Add user to team    AlmaLinux_team
-#    Add user to team    almalinux
+    Activate new user
+    Add User To Team    AlmaLinux_team
+    Add User To Team    almalinux
 
 
 #Login
@@ -75,10 +77,11 @@ Click Menu Button
 
     IF     not (${passed})
         Click Button     ${SIDE MENU BUTTON}
-        Wait Until Element Is Not Visible    ${SIDE LOGOUT BUTTON}      1 min 30 s
+        Wait Until Element Is Visible    id=left-drawer-link-feed      ${WAIT_ELEMENT_TIMEOUT}
     END
 
     IF      "${button name}" != "${None}"
+        Wait Until Element Is Visible    id=left-drawer-link-feed      ${WAIT_ELEMENT_TIMEOUT}
         click element     //div[text()="${button name}"]/../..
     END
 

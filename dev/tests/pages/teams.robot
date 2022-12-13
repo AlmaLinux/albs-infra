@@ -11,7 +11,7 @@ Resource    ${EXECDIR}/pages/general.robot
 
 *** Keywords ***
 
-Add user to team
+Add User To Team
     [Arguments]     ${team name}
     Click Menu Button   Teams
     click element    //td[text()="${team name}"]/../td/a
