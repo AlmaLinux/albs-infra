@@ -35,6 +35,12 @@ Select Platforms
 
 
 Select Architectures
-    [Arguments]    @{archs}
+    [Arguments]    ${platform}     @{archs}
 
-    Fill QSelect    //div[@id="build-planner-q-select-select-arch"]     @{archs}
+    ${platform}=   Evaluate     "${platform}".lower()
+
+    Fill QSelect    //div[@id="build-planner-q-select-arch-${platform}"]     @{archs}
+
+
+Go To Projects Selection
+    Click Button    id=build-planner-q-btn-create-build
