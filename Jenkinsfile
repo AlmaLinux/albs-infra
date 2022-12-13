@@ -65,7 +65,7 @@ pipeline {
           steps {
               script {
                   sh ". ~/albc-ci-env/bin/activate && cd dev && inventory/jenkins_inventory.py --albs-config > albs.json"
-                  sh ". ~/albc-ci-env/bin/activate && cd dev && py.test --junitxml=../reports/integration.xml tests/"
+                  // sh ". ~/albc-ci-env/bin/activate && cd dev && py.test --junitxml=../reports/integration.xml tests/"
               }
           }
       }
