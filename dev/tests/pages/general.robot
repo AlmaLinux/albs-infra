@@ -26,11 +26,13 @@ Login
 
 Authorize
     Click Menu Button   Log in
-    click button    ${GITHUB LOGIN BUTTON}
-    input text      id=login_field      ${GITHUB LOGIN}
-    input text      id=password      ${GITHUB PASSWORD}
-    click button    //*[@id="login"]/div[3]/form/div/input[11]
-    wait until page contains    Feed
+    Wait Until Element Is Visible    ${GITHUB LOGIN BUTTON}    ${WAIT_ELEMENT_TIMEOUT}
+    Click Button    ${GITHUB LOGIN BUTTON}
+    Wait Until Element Is Visible    id=login_field    ${WAIT_ELEMENT_TIMEOUT}
+    Input Text      id=login_field      ${GITHUB LOGIN}
+    Input Text      id=password      ${GITHUB PASSWORD}
+    Click Button    //*[@id="login"]/div[3]/form/div/input[11]
+    Wait Until Page Contains    Feed
     User Successfully Authorized
 
 
@@ -77,11 +79,11 @@ Click Menu Button
 
     IF     not (${passed})
         Click Button     ${SIDE MENU BUTTON}
-        Wait Until Element Is Visible    id=left-drawer-link-feed      ${WAIT_ELEMENT_TIMEOUT}
+        Wait Until Element Is Visible      ${SIDE FEED BUTTON}       ${WAIT_ELEMENT_TIMEOUT}
     END
 
     IF      "${button name}" != "${None}"
-        Wait Until Element Is Visible    id=left-drawer-link-feed      ${WAIT_ELEMENT_TIMEOUT}
+        Wait Until Element Is Visible    ${SIDE FEED BUTTON}       ${WAIT_ELEMENT_TIMEOUT}
         click element     //div[text()="${button name}"]/../..
     END
 

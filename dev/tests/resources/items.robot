@@ -28,7 +28,7 @@ Fill Editable QSelect
 
     Wait Until Element Is Visible    ${locator}      ${WAIT_ELEMENT_TIMEOUT}
     Input Text      ${locator}       ${value}
-    Press Keys      ${locator}      ARROW_DOWN      ARROW_DOWN      ENTER       ESCAPE
+    Press Keys      ${locator}      ARROW_DOWN      ARROW_DOWN      ENTER
 
 
 Toggle Checkbox

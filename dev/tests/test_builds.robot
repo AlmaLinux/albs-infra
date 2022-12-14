@@ -26,3 +26,7 @@ Build Creation
     Select Architectures     AlmaLinux-8     i686    x86_64    aarch64    ppc64le    s390x
     Select Architectures     AlmaLinux-9     i686    x86_64    aarch64    ppc64le    s390x
     Go To Projects Selection
+    Add Project     cmake       c8s-stream-rhel8        Module
+    Start Build
+    Capture Page Screenshot     Embed
+
