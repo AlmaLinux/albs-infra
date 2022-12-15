@@ -1,6 +1,7 @@
 *** Settings ***
 
 Library           SeleniumLibrary
+Library           String
 
 Resource    ${EXECDIR}/resources/locators.robot
 Resource    ${EXECDIR}/resources/items.robot
@@ -65,4 +66,8 @@ Add Project
 
 Start Build
     Click Button    id=bpl-qb-create-build
-
+    Wait Until Element Is Visible    //div[@id="q-notify"]/div/div[6]/div/div/div[1]/div      ${WAIT_ELEMENT_TIMEOUT}
+    ${field text}=   Get Text    //div[@id="q-notify"]/div/div[6]/div/div/div[1]/div
+    ${build id}=    Get Regexp Matches    ${field text}    Build.(\\d+).created      1
+    Capture Page Screenshot     Embed
+    RETURN    ${build id[0]}

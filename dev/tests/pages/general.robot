@@ -84,7 +84,7 @@ Click Menu Button
 
     IF      "${button name}" != "${None}"
         Wait Until Element Is Visible    ${SIDE FEED BUTTON}       ${WAIT_ELEMENT_TIMEOUT}
-        click element     //div[text()="${button name}"]/../..
+        Click Element     //div[text()="${button name}"]/../..
     END
 
 

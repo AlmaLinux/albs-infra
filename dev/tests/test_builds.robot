@@ -10,7 +10,6 @@ Resource          ${EXECDIR}/pages/build_planner.robot
 Suite Setup       Login
 Suite Teardown    Logout
 
-
 *** Test Cases ***
 
 Valid Login
@@ -27,6 +26,5 @@ Build Creation
     Select Architectures     AlmaLinux-9     i686    x86_64    aarch64    ppc64le    s390x
     Go To Projects Selection
     Add Project     cmake       c8s-stream-rhel8        Module
-    Start Build
-    Capture Page Screenshot     Embed
-
+    ${build id}=    Start Build
+    Log     Build id is ${build id}
