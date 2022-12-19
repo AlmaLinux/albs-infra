@@ -32,7 +32,7 @@ Select Product
 Select Platforms
     [Arguments]    @{platforms}
 
-    Fill QSelect    //div[@id="bpl-qs-select-platforms"]     @{platforms}
+    Fill Clouds QSelect    //div[@id="bpl-qs-select-platforms"]     ${platforms}
 
 
 Select Architectures
@@ -40,7 +40,7 @@ Select Architectures
 
     ${platform}=   Evaluate     "${platform}".lower()
 
-    Fill QSelect    //div[@id="bpl-qs-arch-${platform}"]     @{archs}
+    Fill Words QSelect    //div[@id="bpl-qs-arch-${platform}"]     ${archs}
 
 
 Go To Projects Selection
