@@ -33,3 +33,6 @@ Build Creation
 
     ${build id}=    Start Build
     Log     Build id is ${build id}
+    Wait For Build Appears      ${build id}
+    Go To Build     ${build id}
+
