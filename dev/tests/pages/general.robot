@@ -11,6 +11,29 @@ Resource    ${EXECDIR}/pages/teams.robot
 
 *** Keywords ***
 
+
+Get Child WebElement
+    [Arguments]    ${element}    ${locator}
+
+    ${children}     Call Method
+    ...                ${element}
+    ...                find_element
+    ...                  by=xpath    value=${locator}
+
+    RETURN     ${children}
+
+
+Get Child WebElements
+    [Arguments]    ${element}    ${locator}
+
+    ${children}     Call Method
+    ...                ${element}
+    ...                find_elements
+    ...                  by=xpath    value=${locator}
+
+    RETURN     ${children}
+
+
 Login
     Open Browser To Build System Page
     Authorize
@@ -88,3 +111,17 @@ Click Menu Button
     END
 
 
+Run Keywords With Argument
+    [Arguments]    ${arg}   @{keywords}
+
+    FOR    ${keyword}   IN    @{keywords}
+        Run Keyword     ${keyword}    ${arg}
+    END
+
+
+Run Keywords With Two Arguments
+    [Arguments]    ${one}    ${two}   @{keywords}
+
+    FOR    ${keyword}   IN    @{keywords}
+        Run Keyword     ${keyword}    ${one}    ${two}
+    END

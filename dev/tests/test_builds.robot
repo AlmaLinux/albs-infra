@@ -17,22 +17,18 @@ Valid Login
     User Successfully Authorized
 
 
-Build Creation
-    Click Menu Button   New build
-    Set Secure Boot     False
-    Set Parallel Mode     True
-    Select Product    AlmaLinux
-#    Select Platforms     AlmaLinux-8     AlmaLinux-9
-    Select Platforms     AlmaLinux-8
-#    Select Architectures     AlmaLinux-8     i686    x86_64    aarch64    ppc64le    s390x
-#    Select Architectures     AlmaLinux-9     i686    x86_64    aarch64    ppc64le    s390x
-    Select Architectures     AlmaLinux-8     x86_64
-    Go To Projects Selection
-#    Add Project     cmake       c8s-stream-rhel8        Module
-    Add Project     anaconda       a8        Project
+Builds Creation
 
-    ${build id}=    Start Build
-    Log     Build id is ${build id}
-    Wait For Build Appears      ${build id}
-    Go To Build     ${build id}
-
+    For Each Build
+    ...     Go To Build Creation
+    ...     Set Secure Boot
+    ...     Set Parallel Mode
+    ...     Select Product
+    ...     Select Platforms
+    ...     Select Architectures
+    ...     Go To Projects Selection
+    ...     Add Tasks
+    ...     Start Build
+    ...     Wait For Build Appears
+    ...     Go To Build
+    ...     Build Should Be Successful

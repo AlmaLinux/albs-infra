@@ -80,27 +80,26 @@ Fill QSelect
     Press Keys      ${None}      ESCAPE
 
 
-#Fill QSelect
-#    [Arguments]    ${locator}   @{items}
-#
-#    ${field text}=   Get Text    ${locator}
-#    Click Element     ${locator}
-#
-#    FOR    ${each}     IN      @{items}
-#        IF    "${each}" not in "${field text}"
-#            Click Element    //*[text()="${each}"]
-#        END
-#    END
-#
-#    Press Keys      ${None}      ESCAPE
-
-
 Fill Editable QSelect
     [Arguments]    ${locator}    ${value}
 
+    ${value}=    Strip String    ${value}
+
     Wait Until Element Is Visible    ${locator}      ${WAIT_ELEMENT_TIMEOUT}
     Input Text      ${locator}       ${value}
-    Press Keys      ${locator}      ARROW_DOWN      ARROW_DOWN      ENTER
+    Wait Until Element Is Visible    //div[@role="option"]      ${WAIT_ELEMENT_TIMEOUT}
+
+    ${options}=     Get WebElements    //div[@role="option"]
+    FOR     ${option}   IN     @{options}
+        ${option label}=    Get Child WebElement    ${option}     .//div[@class="q-item__label"]
+        ${option text}=    Get Text    ${option label}
+        ${option text}=    Strip String    ${option text}
+        IF      "${option text}" == "${value}"
+            Click Element        ${option}
+            BREAK
+        END
+    END
+    Wait Until Element Is Not Visible    //div[@role="option"]      ${WAIT_ELEMENT_TIMEOUT}
 
 
 Toggle Checkbox

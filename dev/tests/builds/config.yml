@@ -1,0 +1,23 @@
+config:
+  timeouts:
+    element: 1 min 30 s
+    build: 12 hours 30 minutes
+
+  tmpdir: tmp
+
+  selenium:
+    url: http://albs:8080
+    browser: Chrome
+    delay: 0.5
+
+  github:
+    email: <github email>
+    password: <github password>
+    username: <github username>
+
+  db:
+    host: albs
+    port: 5432
+    name: almalinux-bs
+    username: postgres
+    password: password
