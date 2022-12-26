@@ -1,5 +1,5 @@
 config:
-  timeouts:
+  timeout:
     element: 1 min 30 s
     build: 12 hours 30 minutes
 

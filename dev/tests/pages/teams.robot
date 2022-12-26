@@ -2,11 +2,14 @@
 
 Library           SeleniumLibrary
 
-Resource    ${EXECDIR}/resources/locators.robot
 Resource    ${EXECDIR}/resources/items.robot
-Resource    ${EXECDIR}/resources/vars.robot
-
 Resource    ${EXECDIR}/pages/general.robot
+
+*** Variables ***
+
+${id.btn.addmember}         tin-qb-add-new-member
+${id.btn.addselmember}      tin-qb-add-member-add
+${xp.input.member}          //div[@id="tin-qs-add-member"]/input
 
 
 *** Keywords ***
@@ -14,18 +17,16 @@ Resource    ${EXECDIR}/pages/general.robot
 Add User To Team
     [Arguments]     ${team name}
     Click Menu Button   Teams
-    click element    //td[text()="${team name}"]/../td/a
-    wait until element is visible    id=tin-qb-add-new-member
+    Click Element    //td[text()="${team name}"]/../td/a
+    Wait Until Element Is Visible    id=${id.btn.addmember}
 
     ${passed}    Run Keyword And Return Status
-                 ...    Page Should Contain Element    //a[text()="${GITHUB LOGIN}"]
+                 ...    Page Should Contain Element    //a[text()="${config.github.email}"]
     IF    ${passed}
-        return from keyword
+        Return From Keyword
     END
 
-    click button    id=tin-qb-add-new-member
-    wait until element is visible    id=tin-qb-add-member-add
-    Fill Editable QSelect   //div[@id="tin-qs-add-member"]/input    ${GITHUB USERNAME}
-#    input text      //div[@id="team-info-q-select-add-new-member"]/input       ${GITHUB USERNAME}
-#    press keys    id=team-info-q-select-add-new-member      ARROW_DOWN      ARROW_DOWN      ENTER       ESCAPE
-    click element    id=tin-qb-add-member-add
+    Click Button    id=${id.btn.addmember}
+    Wait Until Element Is Visible    id=${id.btn.addselmember}
+    Fill Editable QSelect    ${xp.input.member}   ${config.github.username}
+    Click Element    id=${id.btn.addselmember}

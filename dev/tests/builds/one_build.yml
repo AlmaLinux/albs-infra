@@ -18,5 +18,3 @@ builds:
         repo: perl-Date-Manip
         ref: c8
         type: Project
-
-    id: 18

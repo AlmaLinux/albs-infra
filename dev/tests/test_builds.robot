@@ -1,6 +1,5 @@
 *** Settings ***
 
-Resource          ${EXECDIR}/resources/vars.robot
 Resource          ${EXECDIR}/pages/general.robot
 Resource          ${EXECDIR}/pages/teams.robot
 Resource          ${EXECDIR}/pages/build_planner.robot

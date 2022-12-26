@@ -4,8 +4,12 @@ Library     SeleniumLibrary
 Library     Collections
 Library     String
 
-Resource    ${EXECDIR}/resources/locators.robot
-Resource    ${EXECDIR}/resources/vars.robot
+
+*** Variables ***
+
+${xp.input.ellipsis}    //span[contains(@class, "ellipsis")]
+${xp.input.options}     //div[@role="option"]
+${xp.input.options.labels}     //div[@class="q-item__label"]
 
 
 *** Keywords ***
@@ -16,7 +20,7 @@ Get List Of Selected Clouds
 
     ${selected}=    Create List
 
-    ${elems}    Get WebElements          ${locator}//span[contains(@class, "ellipsis")]
+    ${elems}    Get WebElements          ${locator}${xp.input.ellipsis}
     FOR    ${each}      IN      @{elems}
         ${each text}=    Get Text    ${each}
         Append To List     ${selected}     ${each text}
@@ -62,7 +66,7 @@ Fill QSelect
 
     FOR    ${each}     IN      @{selected}
         IF    "${each}" not in ${items}
-            Wait Until Element Is Visible    //*[text()="${each}"]      ${WAIT_ELEMENT_TIMEOUT}
+            Wait Until Element Is Visible    //*[text()="${each}"]      ${config.timeout.element}
             Click Element    //*[text()="${each}"]
         END
     END
@@ -72,7 +76,7 @@ Fill QSelect
 
     FOR    ${each}     IN      @{items}
         IF    "${each}" not in ${selected}
-            Wait Until Element Is Visible    //*[text()="${each}"]      ${WAIT_ELEMENT_TIMEOUT}
+            Wait Until Element Is Visible    //*[text()="${each}"]      ${config.timeout.element}
             Click Element    //*[text()="${each}"]
         END
     END
@@ -85,13 +89,13 @@ Fill Editable QSelect
 
     ${value}=    Strip String    ${value}
 
-    Wait Until Element Is Visible    ${locator}      ${WAIT_ELEMENT_TIMEOUT}
+    Wait Until Element Is Visible    ${locator}      ${config.timeout.element}
     Input Text      ${locator}       ${value}
-    Wait Until Element Is Visible    //div[@role="option"]      ${WAIT_ELEMENT_TIMEOUT}
+    Wait Until Element Is Visible    ${xp.input.options}      ${config.timeout.element}
 
-    ${options}=     Get WebElements    //div[@role="option"]
+    ${options}=     Get WebElements    ${xp.input.options}
     FOR     ${option}   IN     @{options}
-        ${option label}=    Get Child WebElement    ${option}     .//div[@class="q-item__label"]
+        ${option label}=    Get Child WebElement    ${option}     .${xp.input.options.labels}
         ${option text}=    Get Text    ${option label}
         ${option text}=    Strip String    ${option text}
         IF      "${option text}" == "${value}"
@@ -99,14 +103,14 @@ Fill Editable QSelect
             BREAK
         END
     END
-    Wait Until Element Is Not Visible    //div[@role="option"]      ${WAIT_ELEMENT_TIMEOUT}
+    Wait Until Element Is Not Visible    ${xp.input.options}      ${config.timeout.element}
 
 
 Toggle Checkbox
     [Arguments]    ${locator}  ${value}
 
     ${value}=   Evaluate     "${value}".lower()
-    Wait Until Element Is Visible    ${locator}      ${WAIT_ELEMENT_TIMEOUT}
+    Wait Until Element Is Visible    ${locator}      ${config.timeout.element}
 
     ${status}   Get Element Attribute     ${locator}     aria-checked
 

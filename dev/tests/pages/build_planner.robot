@@ -3,10 +3,22 @@
 Library           SeleniumLibrary
 Library           String
 
-Resource    ${EXECDIR}/resources/locators.robot
 Resource    ${EXECDIR}/resources/items.robot
-Resource    ${EXECDIR}/resources/vars.robot
 
+*** Variables ***
+
+${id.input.archs.pref}    bpl-qs-arch-
+${id.btn.create}    bpl-qb-create-build
+${id.btn.addpoject}    pse-qb-add-project
+${id.btn.modular}    psw-qt-modularity
+${id.btn.submitpoject}     psw-qb-submit
+${xp.chbox.boot}       //div[@id="bpl-qc-secure-boot"]
+${xp.chbox.mode}       //div[@id="bpl-qc-parallel-mode"]
+${xp.input.product}       //div[@id="bpl-qs-select-product"]/input
+${xp.input.platforms}       //div[@id="bpl-qs-select-platforms"]
+${xp.input.repo}       //div[@id="psw-qs-repo"]/input
+${xp.input.ref}        //div[@id="psw-qs-repo-tag-branches"]/input
+${xp.notify.created}   //div[@id="q-notify"]/div/div[6]/div/div/div[1]/div
 
 *** Keywords ***
 
@@ -20,26 +32,26 @@ Go To Build Creation
 Set Secure Boot
     [Arguments]    ${build}
 
-    Toggle Checkbox       //div[@id="bpl-qc-secure-boot"]       ${build.secure_boot}
+    Toggle Checkbox       ${xp.chbox.boot}       ${build.secure_boot}
 
 
 Set Parallel Mode
     [Arguments]    ${build}
 
-    Toggle Checkbox       //div[@id="bpl-qc-parallel-mode"]       ${build.parallel_mode}
+    Toggle Checkbox       ${xp.chbox.mode}       ${build.parallel_mode}
 
 
 Select Product
     [Arguments]    ${build}
 
-    Fill Editable QSelect    //div[@id="bpl-qs-select-product"]/input     ${build.product}
+    Fill Editable QSelect    ${xp.input.product}     ${build.product}
 
 
 Select Platforms
     [Arguments]    ${build}
 
     @{platforms}=   Get Dictionary Keys     ${build.platforms}
-    Fill Clouds QSelect    //div[@id="bpl-qs-select-platforms"]     ${platforms}
+    Fill Clouds QSelect    ${xp.input.platforms}     ${platforms}
 
 
 Select Architectures
@@ -47,33 +59,33 @@ Select Architectures
 
     FOR    ${platform}    ${archs}    IN    &{build.platforms}
         ${platform}=   Evaluate     "${platform}".lower()
-        Fill Words QSelect    //div[@id="bpl-qs-arch-${platform}"]     ${archs}
+        Fill Words QSelect    //div[@id="${id.input.archs.pref}${platform}"]     ${archs}
     END
 
 
 Go To Projects Selection
     [Arguments]    ${build}
 
-    Wait Until Element Is Visible    id=bpl-qb-create-build      ${WAIT_ELEMENT_TIMEOUT}
-    Click Button    id=bpl-qb-create-build
+    Wait Until Element Is Visible    id=${id.btn.create}      ${config.timeout.element}
+    Click Button    id=${id.btn.create}
 
 
 Add Task
     [Arguments]         ${repo}     ${branch}     ${type}="Project"     ${src}=git.almalinux.org
 
-    Click Button    id=pse-qb-add-project
+    Click Button    id=${id.btn.addpoject}
     Click Element    //div[text()="${src}"]
 
-    ${field text}=   Get Text    id=psw-qt-modularity
+    ${field text}=   Get Text    id=${id.btn.modular}
     IF    "${type}" not in "${field text}"
-        Click Element     id=psw-qt-modularity
+        Click Element     id=${id.btn.modular}
     END
 
-    Fill Editable QSelect    //div[@id="psw-qs-repo"]/input     ${repo}
-    Fill Editable QSelect    //div[@id="psw-qs-repo-tag-branches"]/input     ${branch}
+    Fill Editable QSelect    ${xp.input.repo}     ${repo}
+    Fill Editable QSelect    ${xp.input.ref}     ${branch}
 
-    Click Button    id=psw-qb-submit
-    Wait Until Element Is Not Visible    id=psw-qb-submit      ${WAIT_ELEMENT_TIMEOUT}
+    Click Button    id=${id.btn.submitpoject}
+    Wait Until Element Is Not Visible    id=${id.btn.submitpoject}      ${config.timeout.element}
 
 
 Add Tasks
@@ -87,10 +99,10 @@ Add Tasks
 Start Build
     [Arguments]     ${build}
 
-    Wait Until Element Is Visible    id=bpl-qb-create-build      ${WAIT_ELEMENT_TIMEOUT}
-    Click Button    id=bpl-qb-create-build
-    Wait Until Element Is Visible    //div[@id="q-notify"]/div/div[6]/div/div/div[1]/div      ${WAIT_ELEMENT_TIMEOUT}
-    ${field text}=   Get Text    //div[@id="q-notify"]/div/div[6]/div/div/div[1]/div
+    Wait Until Element Is Visible    id=${id.btn.create}      ${config.timeout.element}
+    Click Button    id=${id.btn.create}
+    Wait Until Element Is Visible    ${xp.notify.created}      ${config.timeout.element}
+    ${field text}=   Get Text    ${xp.notify.created}
     ${build id}=    Get Regexp Matches    ${field text}    Build.(\\d+).created      1
     Capture Page Screenshot     Embed
     Log     Build id is ${build id[0]}
