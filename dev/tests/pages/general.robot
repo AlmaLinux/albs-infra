@@ -2,6 +2,8 @@
 
 Library           SeleniumLibrary
 Library           DatabaseLibrary
+Library           RequestsLibrary
+Library           String
 
 Resource    ${EXECDIR}/pages/teams.robot
 
@@ -12,6 +14,8 @@ ${id.btn.openmenu}     mla-qb-menu
 ${xp.btn.logout}       //div[@id="mla-li-logout"]/div[3]/div
 ${xp.btn.feed}         //a[@id="mla-li-feed"]
 ${xp.btn.ghlogin}      //*[@id="q-app"]/div/button
+${url.token}      ${config.selenium.url}/api/v1/auth/login
+${url.login}      ${config.selenium.url}/auth/login/github
 
 
 *** Keywords ***
@@ -41,27 +45,30 @@ Get Child WebElements
 
 Login
     Open Browser To Build System Page
-    Authorize
     Activate new user
+    Authorize
     Add User To Team    AlmaLinux_team
     Add User To Team    almalinux
 
 
-#Login
-#    Add Cookie    albs      ${LOGIN TOKEN}      path=/      domain=${HOST}
-#    Go To         ${LOGIN URL}
-#    User Successfully Authorized
-
 Authorize
-    Click Menu Button   Log in
-    Wait Until Element Is Visible    ${xp.btn.ghlogin}   ${config.timeout.element}
-    Click Button    ${xp.btn.ghlogin}
-    Wait Until Element Is Visible    id=login_field    ${config.timeout.element}
-    Input Text      id=login_field      ${config.github.email}
-    Input Password      id=password      ${config.github.password}
-    Click Button    //*[@id="login"]/div[3]/form/div/input[11]
-    Wait Until Page Contains    Feed
+    ${data}=    Create Dictionary       username=${config.albs.email}       password=${config.albs.password}
+    ${response}=    POST    ${url.token}    data=${data}
+    Log Many    ${response.json()['access_token']}
+    Add Cookie    albs      ${response.json()['access_token']}
+    Go To    ${url.login}
     User Successfully Authorized
+
+#Authorize
+#    Click Menu Button   Log in
+#    Wait Until Element Is Visible    ${xp.btn.ghlogin}   ${config.timeout.element}
+#    Click Button    ${xp.btn.ghlogin}
+#    Wait Until Element Is Visible    id=login_field    ${config.timeout.element}
+#    Input Text      id=login_field      ${config.github.email}
+#    Input Password      id=password      ${config.github.password}
+#    Click Button    //*[@id="login"]/div[3]/form/div/input[11]
+#    Wait Until Page Contains    Feed
+#    User Successfully Authorized
 
 
 User Successfully Authorized
@@ -72,6 +79,8 @@ User Successfully Authorized
 
 
 Activate new user
+    ${hash}=    Bcrypt Password     ${config.albs.password}
+
     Connect To Database    psycopg2
     ...     ${config.db.name}
     ...     ${config.db.username}
@@ -79,11 +88,11 @@ Activate new user
     ...     ${config.db.host}
     ...     ${config.db.port}
 
-    ${user} =    Query    SELECT id, username FROM public.users WHERE email = '${config.github.email}';
+    ${user} =    Query    SELECT id, username FROM public.users WHERE email = '${config.albs.email}';
     Log    ${user}
-    Execute SQL String    UPDATE public.users SET is_superuser = true::boolean, is_verified = true::boolean WHERE is_superuser = false::boolean AND is_verified = false::boolean AND id = ${user[0][0]};
+    Execute SQL String    UPDATE public.users SET is_superuser = true::boolean, is_verified = true::boolean, hashed_password = '${hash}' WHERE is_superuser = false::boolean AND is_verified = false::boolean AND id = ${user[0][0]};
 
-    Set Suite variable    ${config.github.username}       ${user[0][1]}
+    Set Suite variable    ${config.albs.username}       ${user[0][1]}
 
     Disconnect From Database
 

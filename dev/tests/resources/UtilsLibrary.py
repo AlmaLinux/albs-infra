@@ -1,4 +1,8 @@
+import base64
+import hashlib
 import os
+
+import bcrypt
 import rpmfile
 
 from urllib.parse import urlparse
@@ -35,4 +39,9 @@ class UtilsLibrary:
         if not os.path.exists(path):
             raise FileNotFoundError()
 
-
+    def bcrypt_password(self, password: str):
+        hashed = bcrypt.hashpw(
+            password.encode('utf8'),
+            bcrypt.gensalt()
+        )
+        return hashed

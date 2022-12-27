@@ -7,13 +7,14 @@ config:
 
   selenium:
     url: http://albs:8080
-    browser: Chrome
+#    browser: Firefox
+    browser: headlessfirefox
     delay: 0.5
 
-  github:
-    email: <github email>
-    password: <github password>
-    username: <github username>
+  albs:
+    email: base_user@almalinux.org
+    password: password
+    username: base_user
 
   db:
     host: albs

@@ -21,12 +21,12 @@ Add User To Team
     Wait Until Element Is Visible    id=${id.btn.addmember}
 
     ${passed}    Run Keyword And Return Status
-                 ...    Page Should Contain Element    //a[text()="${config.github.email}"]
+                 ...    Page Should Contain Element    //a[text()="${config.albs.email}"]
     IF    ${passed}
         Return From Keyword
     END
 
     Click Button    id=${id.btn.addmember}
     Wait Until Element Is Visible    id=${id.btn.addselmember}
-    Fill Editable QSelect    ${xp.input.member}   ${config.github.username}
+    Fill Editable QSelect    ${xp.input.member}   ${config.albs.username}
     Click Element    id=${id.btn.addselmember}
