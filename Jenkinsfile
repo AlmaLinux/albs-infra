@@ -66,7 +66,7 @@ pipeline {
           steps {
               script {
                   sh """
-                  ~/albc-ci-env/bin/activate &&
+                  . ~/albc-ci-env/bin/activate &&
                   cd dev/tests &&
                   pip install -r requirements.txt &&
                   robot -d report --variablefile builds/config.yml --variablefile builds/${params.nebula_endpoint} test_builds.robot
