@@ -15,6 +15,7 @@ pipeline {
       string(name: 'nebula_template_id', defaultValue: '60959', description: 'opennebula template id')
       string(name: 'nebula_image_id', defaultValue: '62512', description: 'opennebula image id')
       string(name: 'nebula_network_id', defaultValue: '6', description: 'opennebula network id (default is buildsys:mrybas)')
+      string(name: 'builds_config', defaultValue: 'one_build.yml', description: 'builds configuration')
       booleanParam(defaultValue: true, description: 'Destroy nebula instance', name: 'DESTROY')
   }
   environment {
@@ -64,8 +65,12 @@ pipeline {
       stage('Integration tests') {
           steps {
               script {
-                  sh ". ~/albc-ci-env/bin/activate && cd dev && inventory/jenkins_inventory.py --albs-config > albs.json"
-                  // sh ". ~/albc-ci-env/bin/activate && cd dev && py.test --junitxml=../reports/integration.xml tests/"
+                  sh """
+                  ~/albc-ci-env/bin/activate &&
+                  cd dev/tests &&
+                  pip install -r requirements.txt &&
+                  robot -d report --variablefile builds/config.yml --variablefile builds/${params.nebula_endpoint} test_builds.robot
+                  """
               }
           }
       }
@@ -84,6 +89,16 @@ pipeline {
   post {
       always {
           junit 'reports/**/*.xml'
+          publishHTML (target : [
+            allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'dev/tests/report',
+            reportFiles: 'report.html',
+            reportName: 'Robot Results',
+            reportTitles: 'Robot Results'
+            ]
+          )
       }
       aborted {
           script {
