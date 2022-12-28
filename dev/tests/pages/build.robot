@@ -63,7 +63,7 @@ Through Build Tabs
 Wait For Task Completion
     [Arguments]    ${build}    ${task}
 
-    ${markers}=     Create List     tests started     build completed
+    ${markers}=     Create List     tests started     build done
     ${status}=     Set Variable    ${None}
     WHILE    "${status}" not in @{markers}
         ${status elem}=    Get Child WebElement    ${task}     .${xp.task.status}
