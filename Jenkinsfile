@@ -69,7 +69,7 @@ pipeline {
                   . ~/albc-ci-env/bin/activate &&
                   cd dev/tests &&
                   pip install -r requirements.txt &&
-                  robot -d report --variablefile builds/config.yml --variablefile builds/${params.nebula_endpoint} test_builds.robot
+                  robot -d report --variablefile builds/config.yml --variablefile builds/${params.builds_config} test_builds.robot
                   """
               }
           }
@@ -88,7 +88,6 @@ pipeline {
 
   post {
       always {
-          junit 'reports/**/*.xml'
           publishHTML (target : [
             allowMissing: false,
             alwaysLinkToLastBuild: true,

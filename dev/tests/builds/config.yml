@@ -8,7 +8,8 @@ config:
   selenium:
     url: http://albs:8080
 #    browser: Firefox
-    browser: headlessfirefox
+#    browser: headlessfirefox
+    browser: headlesschrome
     delay: 0.5
 
   albs:
