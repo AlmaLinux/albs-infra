@@ -69,6 +69,7 @@ pipeline {
                   . ~/albc-ci-env/bin/activate &&
                   cd dev/tests &&
                   pip install -r requirements.txt &&
+                  npm install chromedriver --include_chromium &&
                   robot -d report --variablefile builds/config.yml --variablefile builds/${params.builds_config} test_builds.robot
                   """
               }
