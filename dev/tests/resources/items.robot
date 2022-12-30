@@ -65,6 +65,10 @@ Fill QSelect
     Click Element     ${locator}
 
     FOR    ${each}     IN      @{selected}
+        ${length}=    Get Length    ${each}
+        IF    ${length} == 0
+            CONTINUE
+        END
         IF    "${each}" not in ${items}
             Wait Until Element Is Visible    //*[text()="${each}"]      ${config.timeout.element}
             Click Element    //*[text()="${each}"]
