@@ -90,7 +90,7 @@ Activate new user
 
     ${user} =    Query    SELECT id, username FROM public.users WHERE email = '${config.albs.email}';
     Log    ${user}
-    Execute SQL String    UPDATE public.users SET is_superuser = true::boolean, is_verified = true::boolean, hashed_password = '${hash}' WHERE is_superuser = false::boolean AND is_verified = false::boolean AND id = ${user[0][0]};
+    Execute SQL String    UPDATE public.users SET is_superuser = true::boolean, is_verified = true::boolean, hashed_password = '${hash}' WHERE id = ${user[0][0]};
 
     Set Suite variable    ${config.albs.username}       ${user[0][1]}
 
