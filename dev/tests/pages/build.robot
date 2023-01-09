@@ -1,9 +1,10 @@
 *** Settings ***
 
-Library           SeleniumLibrary
-Library           OperatingSystem
-Library           String
-Library           ${EXECDIR}/resources/UtilsLibrary.py
+Library     SeleniumLibrary
+Library     OperatingSystem
+Library     String
+
+Library     ${EXECDIR}/resources/UtilsLibrary.py
 
 Resource    ${EXECDIR}/resources/items.robot
 
@@ -24,11 +25,12 @@ ${xp.task.ref}                  //td[1]/span/a[1]
 
 Wait For Build Appears
     [Arguments]    ${build}
-    [Timeout]    ${config.timeout.element}
+    [Timeout]    ${config.timeout.build}
 
     ${reload} =   Set Local Variable     ${False}
     WHILE    ${reload} != ${True}
         Click Menu Button   Feed
+        Click Menu Button
         ${reload}=  Run Keyword And Return Status
                     ...     Page Should Contain Element      id=${id.button.details.prefix}${build.id}
     END
@@ -63,18 +65,22 @@ Through Build Tabs
 Wait For Task Completion
     [Arguments]    ${build}    ${task}
 
-    ${markers}=     Create List     tests started     build done
+    ${markers}=     Create List     tests started     build done     excluded
+    ${fail markers}=     Create List     build failed
     ${status}=     Set Variable    ${None}
     WHILE    "${status}" not in @{markers}
         ${status elem}=    Get Child WebElement    ${task}     .${xp.task.status}
         ${status}=    Get Text    ${status elem}
+        IF    "${status}" in @{fail markers}
+            Fail    Build ${build.id} failed
+        END
         Sleep   60
     END
 
 
 Build Should Be Successful
     [Arguments]    ${build}
-    [Timeout]    ${config.timeout.build}
+    [Timeout]    ${config.timeout.building}
 
     Through Build Tabs    ${build}
     ...     Wait For Task Completion
@@ -86,6 +92,7 @@ Build Should Be Successful
 Validate Packages
     [Arguments]    ${build}    ${task}
 
+    ${count}=    Set Variable    0
     Create Directory    ${config.tmpdir}
 
     ${link elems}=    Get Child WebElements    ${task}     .${xp.task.packages}
@@ -93,6 +100,13 @@ Validate Packages
         ${link}=    Get Element Attribute    ${elem}    href
         ${filepath}=    Download    ${link}     ${config.tmpdir}
         Should Be Package     ${filepath}
+        ${count}=    Evaluate    ${count} + 1
+    END
+
+    Remove Directory    ${config.tmpdir}    recursive=True
+
+    IF   ${count} < 0
+        Fail    No packages found for build ${build.id}
     END
 
 
@@ -118,4 +132,4 @@ Validate Source
 
 Validate Repositories
     [Arguments]    ${build}    ${task}
-    log many    ${build}
+    Log Many    ${build}
