@@ -15,7 +15,7 @@ pipeline {
       string(name: 'nebula_template_id', defaultValue: '60959', description: 'opennebula template id')
       string(name: 'nebula_image_id', defaultValue: '62512', description: 'opennebula image id')
       string(name: 'nebula_network_id', defaultValue: '6', description: 'opennebula network id (default is buildsys:mrybas)')
-      string(name: 'builds_config', defaultValue: 'one_build.yml', description: 'builds configuration')
+      string(name: 'builds_config', defaultValue: 'builds.yml', description: 'builds configuration')
       booleanParam(defaultValue: true, description: 'Destroy nebula instance', name: 'DESTROY')
   }
   environment {
