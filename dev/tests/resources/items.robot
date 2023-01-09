@@ -10,7 +10,8 @@ Library     String
 ${xp.input.ellipsis}    //span[contains(@class, "ellipsis")]
 ${xp.input.options}     //div[@role="option"]
 ${xp.input.options.labels}     //div[@class="q-item__label"]
-
+${xp.input.options.list}     //div[@role="listbox"]
+${xp.frame.backdrop}     //div[@class="q-loading__backdrop"]
 
 *** Keywords ***
 
@@ -97,21 +98,57 @@ Fill Editable QSelect
     Input Text      ${locator}       ${value}
     Wait Until Element Is Visible    ${xp.input.options}      ${config.timeout.element}
 
-    ${options}=     Get WebElements    ${xp.input.options}
+
+    Scroll And Click    ${value}
+#    ${options}=     Get WebElements    ${xp.input.options}
+#    FOR     ${option}   IN     @{options}
+#        ${option label}=    Get Child WebElement    ${option}     .${xp.input.options.labels}
+#        ${option text}=    Get Text    ${option label}
+#        ${option text}=    Strip String    ${option text}
+#        IF      "${option text}" == "${value}"
+#            Click Element        ${option}
+#            BREAK
+#        END
+#    END
+    Wait Until Element Is Not Visible    ${xp.input.options}      ${config.timeout.element}
+
+
+Click Without Scroll
+    [Arguments]    ${value}     ${options}
+
     FOR     ${option}   IN     @{options}
         ${option label}=    Get Child WebElement    ${option}     .${xp.input.options.labels}
         ${option text}=    Get Text    ${option label}
         ${option text}=    Strip String    ${option text}
         IF      "${option text}" == "${value}"
             Click Element        ${option}
-            BREAK
+            RETURN    True
         END
     END
-    Wait Until Element Is Not Visible    ${xp.input.options}      ${config.timeout.element}
+    RETURN    False
+
+
+Scroll And Click
+    [Arguments]    ${value}
+    [Timeout]    ${config.timeout.options}
+
+    ${clicked}=     Set Variable    False
+
+    WHILE  ${clicked} == False
+        ${options}=     Get WebElements    ${xp.input.options}
+        ${length}=    Get Length    ${options}
+        ${clicked}=    Click Without Scroll    ${value}    ${options}
+
+        IF      not ${clicked}
+            FOR    ${index}    IN RANGE    ${length}
+                Press Keys      ${None}      ARROW_DOWN
+            END
+        END
+    END
 
 
 Toggle Checkbox
-    [Arguments]    ${locator}  ${value}
+    [Arguments]    ${locator}    ${value}
 
     ${value}=   Evaluate     "${value}".lower()
     Wait Until Element Is Visible    ${locator}      ${config.timeout.element}
@@ -121,3 +158,35 @@ Toggle Checkbox
     IF     "${status}" != "${value}"
         Click Element    ${locator}
     END
+
+
+Hide Loading Backdrop
+    # <div class="q-loading__backdrop">
+
+    Wait Until Element Is Not Visible    ${xp.frame.backdrop}      ${config.timeout.element}
+
+    ${passed}    Run Keyword And Return Status
+                 ...    Page Should Contain Element    ${xp.frame.backdrop}
+    IF    not ${passed}
+        Return From Keyword
+    END
+
+    ${elem}=    Get WebElement    ${xp.frame.backdrop}
+
+    IF      ${elem} != ${None}
+        Execute Javascript    arguments[0].style.visibility='hidden'    ${elem}
+    END
+
+
+Convert Python Dictionary
+    [Arguments]    ${python_dict}
+    [Documentation]    Converts Python dictionary to Robot dictionary.
+
+    @{keys}=    Get Dictionary Keys    ${python_dict}
+
+    ${robot_dict}=    Create Dictionary
+    FOR    ${key}    IN    @{keys}
+        Set To Dictionary    ${robot_dict}    ${key}=${python_dict['${key}']}
+    END
+
+    RETURN   ${robot_dict}

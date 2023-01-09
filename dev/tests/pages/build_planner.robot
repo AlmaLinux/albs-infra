@@ -1,7 +1,7 @@
 *** Settings ***
 
-Library           SeleniumLibrary
-Library           String
+Library     SeleniumLibrary
+Library     String
 
 Resource    ${EXECDIR}/resources/items.robot
 
@@ -116,3 +116,20 @@ For Each Build
         Log Many    ${build}
         Run Keywords With Argument    ${build}      @{keywords}
     END
+
+
+Create Build
+    [Arguments]    ${build}
+
+    Go To Build Creation        ${build}
+    Set Secure Boot             ${build}
+    Set Parallel Mode           ${build}
+    Select Product              ${build}
+    Select Platforms            ${build}
+    Select Architectures        ${build}
+    Go To Projects Selection    ${build}
+    Add Tasks                   ${build}
+    Start Build                 ${build}
+    Wait For Build Appears      ${build}
+    Go To Build                 ${build}
+    Build Should Be Successful  ${build}

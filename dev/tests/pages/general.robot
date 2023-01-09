@@ -98,7 +98,7 @@ Activate new user
 
 
 Logout
-    Click Menu Button   Logout
+#    Click Menu Button   Logout
     Close Browser
 
 
