@@ -1,7 +1,13 @@
 config:
   timeout:
-    element: 1 min 30 s
-    build: 12 hours 30 minutes
+    # Wait for an element become visible\invisible timeout
+    element: 1 min 30 seconds
+    # Wait for building process timeout
+    building: 12 hours 30 minutes
+    # Wait for build creation timeout
+    build: 2 min 30 seconds
+    # Wait for input field option selection timeout
+    options: 15 min 30 seconds
 
   tmpdir: tmp
 
