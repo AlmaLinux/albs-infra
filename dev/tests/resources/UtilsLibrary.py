@@ -45,3 +45,16 @@ class UtilsLibrary:
             bcrypt.gensalt()
         )
         return hashed
+
+    def generate_build_name(self, build: dict, count: int) -> str:
+        platforms_label = ''
+        for platform, archs in build['platforms'].items():
+            platforms_label += f'{platform}({",".join(archs)}) '
+
+        tasks_label = ''
+        for task in build['tasks']:
+            task_label = f" / {task['repo']}({task['ref']})"
+            tasks_label += task_label
+
+        build_name = f"Build #{count} based on {platforms_label}//{tasks_label[2:]}"
+        return build_name

@@ -8,5 +8,6 @@ robotframework-pythonlibcore==4.0.0
 robotframework-requests==0.9.4
 robotframework-seleniumlibrary==6.0.0
 robotframework-sshlibrary==3.8.0
+robotframework-pabot==2.10.0
 rpmfile==1.0.8
 selenium==4.7.2
