@@ -1,6 +1,6 @@
 *** Settings ***
 
-Library           SeleniumLibrary
+Library     SeleniumLibrary
 
 Resource    ${EXECDIR}/resources/items.robot
 Resource    ${EXECDIR}/pages/general.robot
@@ -16,9 +16,12 @@ ${xp.input.member}          //div[@id="tin-qs-add-member"]/input
 
 Add User To Team
     [Arguments]     ${team name}
+
+    Hide Loading Backdrop
     Click Menu Button   Teams
+    Wait Until Element Is Visible    //td[text()="${team name}"]/../td/a   ${config.timeout.element}
     Click Element    //td[text()="${team name}"]/../td/a
-    Wait Until Element Is Visible    id=${id.btn.addmember}
+    Wait Until Element Is Visible    id=${id.btn.addmember}   ${config.timeout.element}
 
     ${passed}    Run Keyword And Return Status
                  ...    Page Should Contain Element    //a[text()="${config.albs.email}"]
@@ -27,6 +30,6 @@ Add User To Team
     END
 
     Click Button    id=${id.btn.addmember}
-    Wait Until Element Is Visible    id=${id.btn.addselmember}
+    Wait Until Element Is Visible    id=${id.btn.addselmember}   ${config.timeout.element}
     Fill Editable QSelect    ${xp.input.member}   ${config.albs.username}
     Click Element    id=${id.btn.addselmember}
