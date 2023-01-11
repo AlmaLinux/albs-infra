@@ -30,7 +30,8 @@ Wait For Build Appears
     ${reload} =   Set Local Variable     ${False}
     WHILE    ${reload} != ${True}
         Click Menu Button   Feed
-        Click Menu Button
+        Sleep    30 seconds
+        Hide Loading Backdrop
         ${reload}=  Run Keyword And Return Status
                     ...     Page Should Contain Element      id=${id.button.details.prefix}${build.id}
     END

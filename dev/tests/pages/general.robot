@@ -6,6 +6,7 @@ Library           RequestsLibrary
 Library           String
 
 Resource    ${EXECDIR}/pages/teams.robot
+Resource    ${EXECDIR}/resources/items.robot
 
 
 *** Variables ***
@@ -116,6 +117,7 @@ Build System Page Should Be Open
 Click Menu Button
     [Arguments]   ${button name}=${None}
 
+    Hide Loading Backdrop
     ${passed}    Run Keyword And Return Status
                  ...    Element Should Be Visible    ${xp.btn.feed}
 
@@ -128,6 +130,7 @@ Click Menu Button
         Wait Until Element Is Visible    ${xp.btn.feed}       ${config.timeout.element}
         Click Element     //div[text()="${button name}"]/../..
     END
+    Hide Loading Backdrop
 
 
 Run Keywords With Argument

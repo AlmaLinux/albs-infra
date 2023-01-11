@@ -96,8 +96,11 @@ Fill Editable QSelect
 
     Wait Until Element Is Visible    ${locator}      ${config.timeout.element}
     Input Text      ${locator}       ${value}
-    Wait Until Element Is Visible    ${xp.input.options}      ${config.timeout.element}
-
+    ${is visible}=     run keyword and return status
+                       ...    Wait Until Element Is Visible    ${xp.input.options}      ${config.timeout.element}
+    IF    not ${is visible}
+        Press Keys      ${None}      ARROW_DOWN
+    END
 
     Scroll And Click    ${value}
 #    ${options}=     Get WebElements    ${xp.input.options}
@@ -175,6 +178,24 @@ Hide Loading Backdrop
 
     IF      ${elem} != ${None}
         Execute Javascript    arguments[0].style.visibility='hidden'    ${elem}
+    END
+
+
+Convert Python Dictionary Nested
+    [Arguments]    ${python_dict}
+    [Documentation]    Converts Python dictionary to Robot dictionary.
+
+    @{keys}=    Get Dictionary Keys    ${python_dict}
+
+    FOR    ${key}    IN    @{keys}
+        ${is dict}=      Evaluate     isinstance(${value}, (ordereddict, dict,))
+
+        IF    ${is dict}
+            ${nested_dict}=    Convert Python Dictionary    ${value}
+            Set To Dictionary    ${robot_dict}    ${key}=${python_dict['${key}']}
+            robot_dict['${key}']
+        END
+
     END
 
 
