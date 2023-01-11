@@ -17,7 +17,9 @@ ${xp.tabs}                      //*[@id="bui-qt-tab-menu"]//*[@role="tab"]//*[no
 ${xp.tasks}                     //td[starts-with(@id, "bui-tm-task-")]/..
 ${xp.task.status}               //td[starts-with(@id, "bui-tm-task-")]
 ${xp.task.packages}             /td[3]/.//a
+${xp.task.packages.notary}             /td[3]/.//i
 ${xp.task.repo}                 //td[1]/span/span[1]
+${xp.task.repo.notary}          //td[1]/span/span[1]/div/i
 ${xp.task.ref}                  //td[1]/span/a[1]
 
 *** Keywords ***
@@ -88,6 +90,8 @@ Build Should Be Successful
     ...     Validate Source
     ...     Validate Packages
     ...     Validate Repositories
+    ...     Validate Packages Notary
+    ...     Validate Source Notary
 
 
 Validate Packages
@@ -111,6 +115,22 @@ Validate Packages
     END
 
 
+Should Be Notarized
+    [Arguments]    ${elem}
+
+    ${status}=    Get Text    ${elem}
+    Should Be Equal As Strings    ${status}     key
+
+
+Validate Packages Notary
+    [Arguments]    ${build}    ${task}
+
+    ${icons}=    Get Child WebElements    ${task}     .${xp.task.packages.notary}
+    FOR    ${elem}    IN    @{icons}
+        Should Be Notarized    ${elem}
+    END
+
+
 Validate Source
     [Arguments]    ${build}    ${task}
 
@@ -129,6 +149,13 @@ Validate Source
     ${ref link}=    Get Element Attribute    ${ref elem}    href
     ${actual ref}=    Split String    ${ref link}     /
     Should Be Equal As Strings      ${expected ref}      ${actual ref[7]}
+
+
+Validate Source Notary
+    [Arguments]    ${build}    ${task}
+
+    ${elem}=    Get Child WebElement    ${task}     .${xp.task.repo.notary}
+    Should Be Notarized    ${elem}
 
 
 Validate Repositories
