@@ -3,7 +3,7 @@ import random
 import string
 import ruamel.yaml
 
-from multiprocess import Process
+from multiprocess import Process, Pool
 from io import StringIO
 from robot.api import TestSuite
 from robot.running import TestCase
@@ -50,20 +50,19 @@ def create_suite(suite_name: str, build: dict) -> TestSuite:
 
     test: TestCase = suite.tests.create(f'Create Build')
     test.body.create_keyword('Set Variable', args=[build], assign=['${build}'])
-    # test.body.create_keyword('Convert Python Dictionary', args=[build], assign=['${build}'])
     test.body.create_keyword('Log Many', args=['${build}'])
     test.body.create_keyword('Go To Build Creation', args=['${build}'])
     test.body.create_keyword('Set Secure Boot', args=['${build}'])
     test.body.create_keyword('Set Parallel Mode', args=['${build}'])
     test.body.create_keyword('Select Product', args=['${build}'])
     test.body.create_keyword('Select Platforms', args=['${build}'])
-    # test.body.create_keyword('Select Architectures', args=['${build}'])
-    # test.body.create_keyword('Go To Projects Selection', args=['${build}'])
-    # test.body.create_keyword('Add Tasks', args=['${build}'])
-    # test.body.create_keyword('Start Build', args=['${build}'])
-    # test.body.create_keyword('Wait For Build Appears', args=['${build}'])
-    # test.body.create_keyword('Go To Build', args=['${build}'])
-    # test.body.create_keyword('Build Should Be Successful', args=['${build}'])
+    test.body.create_keyword('Select Architectures', args=['${build}'])
+    test.body.create_keyword('Go To Projects Selection', args=['${build}'])
+    test.body.create_keyword('Add Tasks', args=['${build}'])
+    test.body.create_keyword('Start Build', args=['${build}'])
+    test.body.create_keyword('Wait For Build Appears', args=['${build}'])
+    test.body.create_keyword('Go To Build', args=['${build}'])
+    test.body.create_keyword('Build Should Be Successful', args=['${build}'])
 
     suite.setup.name = 'Login'
     suite.teardown.name = 'Logout'
@@ -71,7 +70,8 @@ def create_suite(suite_name: str, build: dict) -> TestSuite:
     return suite
 
 
-def exec(suite: TestSuite, params: dict):
+def exec(item: tuple):
+    suite, params = item
     return suite.run(**params)
 
 
@@ -80,11 +80,12 @@ if __name__ == '__main__':
     parser.add_argument('output_dir', default='out')
     parser.add_argument('-c', '--config', default='config.yml')
     parser.add_argument('-b', '--builds', default='builds.yml')
+    parser.add_argument('-p', '--processes', default=5)
     parser.add_argument('-v', '--verbose', action='store_true')
     args = parser.parse_args()
 
     builds = get_builds_config(args.builds)
-    procs = []
+    suites = []
     for build in builds:
         suite_name, suite_number = generate_build_name(build)
 
@@ -98,9 +99,7 @@ if __name__ == '__main__':
                 'stderr': None if args.verbose else StringIO()
         }
         suite = create_suite(suite_name, build)
-        proc = Process(target=exec, args=(suite, params,))
-        proc.start()
-        procs.append(proc)
+        suites.append((suite, params))
 
-    for proc in procs:
-        proc.join()
+    with Pool(args.processes) as pool:
+        pool.map(exec, suites)
