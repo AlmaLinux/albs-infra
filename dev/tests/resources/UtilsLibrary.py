@@ -16,7 +16,7 @@ class UtilsLibrary:
     def download(self, url: str, path: str) -> str:
         url = urlparse(url)
         if not os.path.exists(path):
-            raise FileNotFoundError()
+            os.makedirs(path)
 
         filename = url.path.split('/')[-1]
         filepath = os.path.join(path, filename)
@@ -25,6 +25,10 @@ class UtilsLibrary:
                 file.write(stream.read())
 
         return filepath
+
+    def get_url_filename(self, url: str) -> str:
+        url = urlparse(url)
+        return os.path.basename(url.path)
 
     def should_be_package(self, path: str) -> None:
         if not os.path.exists(path):

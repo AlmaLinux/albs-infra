@@ -32,11 +32,6 @@ def get_builds_config(path: str):
         data = yaml.load(file)
     return data['builds']
 
-# def to_dotdict(data: dict) -> DotDict:
-#     for key in data.keys():
-#         if is_dict_like(data[key]) and not isinstance(data[key], DotDict):
-#             return DotDict(data[key])
-
 
 def create_suite(suite_name: str, build: dict) -> TestSuite:
     build = DotDict(build)

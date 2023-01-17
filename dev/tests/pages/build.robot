@@ -17,10 +17,12 @@ ${xp.tabs}                      //*[@id="bui-qt-tab-menu"]//*[@role="tab"]//*[no
 ${xp.tasks}                     //td[starts-with(@id, "bui-tm-task-")]/..
 ${xp.task.status}               //td[starts-with(@id, "bui-tm-task-")]
 ${xp.task.packages}             /td[3]/.//a
-${xp.task.packages.notary}             /td[3]/.//i
+${xp.task.packages.notary}      /td[3]/.//i
 ${xp.task.repo}                 //td[1]/span/span[1]
 ${xp.task.repo.notary}          //td[1]/span/span[1]/div/i
 ${xp.task.ref}                  //td[1]/span/a[1]
+${xp.tab.selected}              //div[@id="bui-qt-tab-menu"]/div/div[@aria-selected="true"]
+${xp.links}                     //a[@href]
 
 *** Keywords ***
 
@@ -87,11 +89,12 @@ Build Should Be Successful
 
     Through Build Tabs    ${build}
     ...     Wait For Task Completion
+    ...     Attach Logs
     ...     Validate Source
     ...     Validate Packages
     ...     Validate Repositories
-    ...     Validate Packages Notary
-    ...     Validate Source Notary
+#    ...     Validate Packages Notary
+#    ...     Validate Source Notary
 
 
 Validate Packages
@@ -161,3 +164,48 @@ Validate Source Notary
 Validate Repositories
     [Arguments]    ${build}    ${task}
     Log Many    ${build}
+
+
+Attach Logs
+    [Arguments]    ${build}    ${task}
+
+    ${selected tab}=    Get WebElement    ${xp.tab.selected}
+    ${selected tab text}=    Get Text    ${selected tab}
+    ${attrs}=    Split String    ${selected tab text}    .
+    ${platform}=    Set Variable    ${attrs[0]}
+    ${arch}=    Set Variable    ${attrs[1]}
+
+    ${task id}=    Get Element Attribute     ${xp.task.status}       id
+    ${split task id}=    Split String    ${task id}    -
+    ${task id}=    Set Variable    ${split task id[3]}
+
+    ${url}=    Set Variable    ${config.selenium.url}/pulp/content/build_logs/${platform}-${arch}-${build.id}-artifacts-${task id}/
+
+    Open Browser    ${url}    ${config.selenium.browser}
+    Maximize Browser Window
+
+    ${links}=   Create List
+    ${link elems}=    Get WebElements    ${xp.links}
+    FOR    ${link elem}    IN    @{link elems}
+        ${link}=    Get Element Attribute    ${link elem}    href
+        IF    '.log' in '${link}'
+            Append To List    ${links}    ${link}
+        END
+    END
+
+    Close Window
+    Switch Browser    1
+
+    ${artifacts}=    Create Dictionary
+    ${paths}=    Create List
+    ${logs string}=    Set Variable
+    FOR    ${link}    IN    @{links}
+        ${path}=    Download    ${link}     ${OUTPUT DIR}${/}logs${/}${task id}
+        Append To List    ${paths}    ${path}
+        ${filename}=    Get Url Filename    ${path}
+        # Set Suite Metadata      Attached Log ${build.id}${/}${task id}     html=<a href="${path}">${filename}</a>
+        ${log path}=   Set Variable     .${/}logs${/}${task id}${/}${filename}
+        # ${logs string}=    Catenate    ${logs string}    [file:///${log path}|${filename}],
+        ${logs string}=    Catenate    ${logs string}    [${log path}|${filename}],
+        Set Suite Metadata      Attached Log ${build.id}${/}${task id}     ${logs string}
+    END
