@@ -27,6 +27,17 @@
     command: bash -c 'DATABASE_URL="postgresql+asyncpg://postgres:{{ postgres_password }}@db/{{ postgres_database }}" PULP_HOST=http://pulp PULP_USER=admin PULP_PASSWORD="{{ pulp_password }}" env/bin/python scripts/bootstrap_permissions.py'
   when: "{{ load_platforms is true }}"
 
+- name: Activate user
+  community.docker.docker_container_exec:
+    container: albs-web-server_web_server_1
+    env:
+      DATABASE_URL: "postgresql+asyncpg://postgres:{{ postgres_password }}@db/{{ postgres_database }}"
+      PULP_HOST: "http://pulp"
+      PULP_USER: "admin"
+      PULP_PASSWORD: "{{ pulp_password }}"
+    command: bash -c 'env/bin/python scripts/manage_users.py -e base_user@almalinux.org -t AlmaLinux_team --verify --superuser'
+  when: "{{ load_platforms is true }}"
+
 - name: Load platforms
   community.docker.docker_container_exec:
     container: albs-web-server_web_server_1
@@ -34,6 +45,6 @@
   when: "{{ load_platforms is true }}"
 
 - name: Open 8088 port
-  ansible.builtin.shell: firewall-cmd --zone=public --permanent --add-port 8088/tcp && firewall-cmd --reload 
+  ansible.builtin.shell: firewall-cmd --zone=public --permanent --add-port 8088/tcp && firewall-cmd --reload
   become: yes
   when: "{{ local_connection is false }}"

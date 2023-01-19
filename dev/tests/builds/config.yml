@@ -1,0 +1,31 @@
+config:
+  timeout:
+    # Wait for an element become visible\invisible timeout
+    element: 4 min 30 seconds
+    # Wait for building process timeout
+    building: 12 hours 30 minutes
+    # Wait for build creation timeout
+    build: 6 min 30 seconds
+    # Wait for input field option selection timeout
+    options: 15 min 30 seconds
+
+  tmpdir: tmp
+
+  selenium:
+    url: http://albs:8080
+#    browser: Firefox
+#    browser: headlessfirefox
+    browser: headlesschrome
+    delay: 0.5
+
+  albs:
+    email: base_user@almalinux.org
+    password: password
+    username: base_user
+
+  db:
+    host: albs
+    port: 5432
+    name: almalinux-bs
+    username: postgres
+    password: password

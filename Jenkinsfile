@@ -11,10 +11,11 @@ pipeline {
       string(name: 'albs_sign_node', defaultValue: 'master', description: 'albs-sign-node branch/tag')
       string(name: 'alts', defaultValue: 'master', description: 'alts branch/tag')
       string(name: 'nebula_endpoint', defaultValue: 'https://nebula-atm.cloudlinux.com:2633/RPC2', description: 'opennebula endpoint')
-      string(name: 'nebula_username', defaultValue: 'alternatives', description: 'opennebula user')
-      string(name: 'nebula_template_id', defaultValue: '42847', description: 'opennebula template id')
-      string(name: 'nebula_image_id', defaultValue: '44562', description: 'opennebula image id')
+      string(name: 'nebula_username', defaultValue: 'asedliarskii', description: 'opennebula user')
+      string(name: 'nebula_template_id', defaultValue: '60959', description: 'opennebula template id')
+      string(name: 'nebula_image_id', defaultValue: '62512', description: 'opennebula image id')
       string(name: 'nebula_network_id', defaultValue: '6', description: 'opennebula network id (default is buildsys:mrybas)')
+      string(name: 'builds_config', defaultValue: 'builds.yml', description: 'builds configuration')
       booleanParam(defaultValue: true, description: 'Destroy nebula instance', name: 'DESTROY')
   }
   environment {
@@ -23,10 +24,10 @@ pipeline {
       TF_VAR_one_template_id = "${params.nebula_template_id}"
       TF_VAR_one_image_id = "${params.nebula_image_id}"
       TF_VAR_one_network_id  = "${params.nebula_network_id}"
-      TF_VAR_one_password = credentials('alternatives_nebula_password')
+      TF_VAR_one_password = credentials('sedliarskii_nebula')
       TF_VAR_albs_ssh_key = credentials('alternatives_public_ssh_key')
-      ALBS_GITHUB_CLIENT = credentials('albs_github_client')
-      ALBS_GITHUB_CLIENT_SECRET = credentials('albs_github_client_secret')
+      ALBS_GITHUB_CLIENT = credentials('sedliarskii_github_client')
+      ALBS_GITHUB_CLIENT_SECRET = credentials('sedliarskii_github_secret')
       ALBS_WEB_SERVER = "${params.albs_web_server}"
       ALBS_NODE = "${params.albs_node}"
       ALBS_FRONTEND = "${params.albs_frontend}"
@@ -64,8 +65,13 @@ pipeline {
       stage('Integration tests') {
           steps {
               script {
-                  sh ". ~/albc-ci-env/bin/activate && cd dev && inventory/jenkins_inventory.py --albs-config > albs.json"
-                  sh ". ~/albc-ci-env/bin/activate && cd dev && py.test --junitxml=../reports/integration.xml tests/"
+                  sh """
+                  . ~/albc-ci-env/bin/activate &&
+                  cd dev/tests &&
+                  pip install -r requirements.txt &&
+                  npm install chromedriver --include_chromium &&
+                  robot -d report --variablefile builds/config.yml --variablefile builds/${params.builds_config} test_builds.robot
+                  """
               }
           }
       }
@@ -83,7 +89,16 @@ pipeline {
 
   post {
       always {
-          junit 'reports/**/*.xml'
+          publishHTML (target : [
+            allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'dev/tests/report',
+            reportFiles: 'report.html',
+            reportName: 'Robot Results',
+            reportTitles: 'Robot Results'
+            ]
+          )
       }
       aborted {
           script {

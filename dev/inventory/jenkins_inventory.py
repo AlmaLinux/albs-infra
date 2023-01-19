@@ -20,12 +20,21 @@ def main(argv):
 
     albs_jwt_secret = 'secret'
     alts_jwt_secret = 'alts-secret'
-    albs_jwt_token = jwt.encode({
-        'expires': time.time() + 99999999999999999999,
-        'identity': {'user_id': 1}
-    }, albs_jwt_secret)
+    albs_jwt_token = jwt.encode(
+        {
+            'user_id': '1',
+            'aud': [
+                'fastapi-users:auth'
+            ],
+            'exp': int(time.time() + 99999999999999999999),
+        },
+        albs_jwt_secret,
+        algorithm='HS256'
+    )
     alts_jwt_token = jwt.encode(
-        {'email': 'albs-ci@almalinux.org'}, alts_jwt_secret
+        {'email': 'base_user@almalinux.org'},
+        alts_jwt_secret,
+        algorithm='HS256'
     )
 
     rabbitmq_pass = 'testy_test_test'
@@ -34,11 +43,11 @@ def main(argv):
     github_client_secret = os.environ.get('ALBS_GITHUB_CLIENT_SECRET')
     albs_ssh_key = os.environ.get('TF_VAR_albs_ssh_key')
 
-    albs_web_server = os.environ.get('ALBS_WEB_SERVER', 'master')
-    albs_node = os.environ.get('ALBS_NODE', 'master')
-    albs_frontend = os.environ.get('ALBS_FRONTEND', 'master')
-    albs_sign_node = os.environ.get('ALBS_SIGN_NODE', 'master')
-    alts = os.environ.get('ALTS', 'master')
+    albs_web_server = os.environ.get('albs_web_server', 'master')
+    albs_node = os.environ.get('albs_node', 'master')
+    albs_frontend = os.environ.get('albs_frontend', 'master')
+    albs_sign_node = os.environ.get('albs_sign_node', 'master')
+    alts = os.environ.get('alts', 'master')
 
     response = {
         'all': {
@@ -54,6 +63,7 @@ def main(argv):
                 'postgres_database': 'almalinux-bs',
                 'github_client': github_client,
                 'github_client_secret': github_client_secret,
+                'frontend_baseurl': f'http://albs:8080',
                 'albs_jwt_token': albs_jwt_token,
                 'alts_jwt_token': alts_jwt_token,
                 'albs_jwt_secret': albs_jwt_secret,
@@ -63,7 +73,7 @@ def main(argv):
                 'rabbitmq_user': 'test-system',
                 'rabbitmq_pass': rabbitmq_pass,
                 'rabbitmq_vhost': 'test_system',
-                'alts_result_backend': '', # This is deprecated option
+                'alts_result_backend': '',  # This is deprecated option
                 'pgp_password': '32167',
                 'pgp_keyid': '002D64E3C7827BD1',
                 'pgp_fingerprint': '8E0EF28BB3DF0A9FCA18408B002D64E3C7827BD1',
